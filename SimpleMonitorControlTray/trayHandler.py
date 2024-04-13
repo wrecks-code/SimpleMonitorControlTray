@@ -42,7 +42,6 @@ def openConfigClicked():
 checked = False
 
 
-# TODO implement autostart logic from registryHandler
 def toggleAutostart(icon):
     # Recreate the menu with the updated title for "Autostart"
     new_menu = (
