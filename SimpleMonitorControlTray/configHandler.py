@@ -13,11 +13,12 @@ asset_iconDisabled = "assets\iconDisabled.png"
 
 fileNotFound = " file not found. Exiting."
 
-MULTIMONITORTOOL_PATH, CSV_FILE_PATH, MM_CONFIG_FILE_PATH, MONITOR_NAME = (
+MULTIMONITORTOOL_PATH, CSV_FILE_PATH, MM_CONFIG_FILE_PATH, MONITOR_NAME, AUTOSTART = (
     None,
     None,
     None,
     None,
+    False,
 )
 
 

@@ -39,10 +39,29 @@ def openConfigClicked():
     os.startfile(os.path.join(script_dir, cH.config_file_path))
 
 
+checked = False
+
+
+# TODO implement autostart logic from registryHandler
+def toggleAutostart(icon):
+    # Recreate the menu with the updated title for "Autostart"
+    new_menu = (
+        item("New Title", toggleAutostart),
+        item(
+            "Save current monitor layout (used when enabling)",
+            saveMultiMonitorToolConfigClicked,
+        ),
+        item("Open Config.ini", openConfigClicked),
+        item("Quit", quitItemClicked),
+    )
+    icon.menu = new_menu
+
+
 def initTray():
     global icon
     menu = (
         item(title, iconTrayClicked, default=True, visible=False),
+        item("Autostart", toggleAutostart),
         item(
             "Save current monitor layout (used when enabling)",
             saveMultiMonitorToolConfigClicked,
