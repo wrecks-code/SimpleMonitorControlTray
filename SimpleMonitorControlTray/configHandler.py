@@ -39,6 +39,8 @@ def check_for_missing_files():
     if not os.path.exists(multiMonitorToolOutputPath):
         os.makedirs(multiMonitorToolOutputPath)
 
+    # TODO add assets folder check
+
     nH.sendNotification(
         "If you do not have all Monitors enabled and configured as you like right now, please do so and then right click the tray icon and save the configuration",
         20,

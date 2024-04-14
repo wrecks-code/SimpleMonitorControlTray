@@ -8,6 +8,7 @@ import SimpleMonitorControlTray.configHandler as cH
 import SimpleMonitorControlTray.monitorHandler as mH
 import SimpleMonitorControlTray.registryHandler as rH
 
+# TODO this returns the wrong path (System32) if run from registry autostart
 script_dir = os.getcwd()
 
 imageIconEnabled = Image.open(os.path.join(script_dir, "assets\iconEnabled.png"))

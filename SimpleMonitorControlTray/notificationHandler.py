@@ -9,5 +9,5 @@ def sendError(text):
 
 
 def sendNotification(text, duration):
-    # toaster.show_toast("It's your first startup!", text, duration=duration)
+    # TODO toaster.show_toast("It's your first startup!", text, duration=duration)
     pass
