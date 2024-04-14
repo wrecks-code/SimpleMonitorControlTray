@@ -1,12 +1,22 @@
 import os
 import winreg as reg
 
-import main
-
 keyName = "SimpleMonitorControlTray"
 
-exe_path = os.path.join(main.script_dir, keyName + ".exe")
+import SimpleMonitorControlTrayModule.directoryHandler as dH
+
+exe_path = os.path.join(dH.getDirectory(), keyName + ".exe")
 registry_key = r"Software\Microsoft\Windows\CurrentVersion\Run"
+
+
+def isAutostartKeyinRegistry():
+    try:
+        key = reg.OpenKey(reg.HKEY_CURRENT_USER, registry_key)
+        value, _ = reg.QueryValueEx(key, keyName)
+        reg.CloseKey(key)
+        return True
+    except FileNotFoundError:
+        return False
 
 
 def add_to_autostart():

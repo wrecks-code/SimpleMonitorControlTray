@@ -1,11 +1,11 @@
 import configparser
 import os
 
-import SimpleMonitorControlTray.monitorHandler as mH
-import SimpleMonitorControlTray.notificationHandler as nH
-import SimpleMonitorControlTray.trayHandler as tH
+import SimpleMonitorControlTrayModule.directoryHandler as dH
+import SimpleMonitorControlTrayModule.monitorHandler as mH
+import SimpleMonitorControlTrayModule.notificationHandler as nH
+import SimpleMonitorControlTrayModule.trayHandler as tH
 
-currentPath = os.getcwd()
 config_file_path = "config.ini"
 assets_folder = "assets"
 asset_iconEnabled = "assets\iconEnabled.png"
@@ -27,14 +27,14 @@ def check_for_missing_files():
     if not os.path.exists(MULTIMONITORTOOL_PATH):
         nH.sendError(MULTIMONITORTOOL_PATH + fileNotFound)
         tH.exitItemClicked()
-    if not os.path.exists(os.path.join(currentPath, asset_iconEnabled)):
+    if not os.path.exists(os.path.join(dH.getDirectory(), asset_iconEnabled)):
         nH.sendError(asset_iconDisabled + fileNotFound)
         tH.exitItemClicked()
 
     if not os.path.exists(CSV_FILE_PATH):
         mH.saveMultiMonitorToolConfig()
 
-    multiMonitorToolOutputPath = os.path.join(currentPath, "MultiMonitorTool")
+    multiMonitorToolOutputPath = os.path.join(dH.getDirectory(), "MultiMonitorTool")
 
     if not os.path.exists(multiMonitorToolOutputPath):
         os.makedirs(multiMonitorToolOutputPath)
@@ -51,7 +51,7 @@ def read_config():
 
     global AUTOSTART, MULTIMONITORTOOL_PATH, CSV_FILE_PATH, MM_CONFIG_FILE_PATH, MONITOR_NAME
 
-    if not os.path.exists(os.path.join(currentPath, asset_iconEnabled)):
+    if not os.path.exists(os.path.join(dH.getDirectory(), asset_iconEnabled)):
         nH.sendError(config_file_path + fileNotFound)
         tH.exitItemClicked()
 

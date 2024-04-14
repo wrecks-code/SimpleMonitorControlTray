@@ -1,7 +1,7 @@
 import csv
 import subprocess
 
-import SimpleMonitorControlTray.configHandler as ch
+import SimpleMonitorControlTrayModule.configHandler as ch
 
 
 def saveMultiMonitorToolConfig():

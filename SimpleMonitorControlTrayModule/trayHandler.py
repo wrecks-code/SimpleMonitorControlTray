@@ -4,21 +4,19 @@ import pystray
 from PIL import Image
 from pystray import MenuItem as item
 
-import main
-import SimpleMonitorControlTray.configHandler as cH
-import SimpleMonitorControlTray.monitorHandler as mH
-import SimpleMonitorControlTray.registryHandler as rH
-
-# TODO this returns the wrong path (System32) if run from registry autostart
-script_dir = main.script_dir
-
-imageIconEnabled = Image.open(os.path.join(script_dir, "assets\iconEnabled.png"))
-imageIconDisabled = Image.open(os.path.join(script_dir, "assets\iconDisabled.png"))
-
-title = "SimpleMonitorControlTray"
+import SimpleMonitorControlTrayModule.autoStartHandler as aH
+import SimpleMonitorControlTrayModule.configHandler as cH
+import SimpleMonitorControlTrayModule.directoryHandler as dH
+import SimpleMonitorControlTrayModule.monitorHandler as mH
 
 icon = None
 itemTitle = ""
+
+script_dir = dH.getDirectory()
+assets_dir = script_dir + "\\assets"
+
+imageIconEnabled = Image.open(os.path.join(assets_dir, "iconEnabled.png"))
+imageIconDisabled = Image.open(os.path.join(assets_dir, "iconDisabled.png"))
 
 
 def saveMultiMonitorToolConfigClicked():
@@ -43,22 +41,19 @@ def openConfigClicked():
     os.startfile(os.path.join(script_dir, cH.config_file_path))
 
 
-def toggleAutostartInConfig():
+def toggleAutostart(icon):
     global itemTitle
     if cH.AUTOSTART == "False":
         itemTitle = "Disable Autostart"
-        rH.add_to_autostart()
+        aH.addShortcutToStartupFolder()
         cH.set_config_value("SETTINGS", "autostart", "True")
         cH.AUTOSTART = "True"
     else:
         itemTitle = "Enable Autostart"
-        rH.remove_from_autostart()
+        aH.removeShortcutFromStartupFolder()
         cH.set_config_value("SETTINGS", "autostart", "False")
         cH.AUTOSTART = "False"
 
-
-def toggleAutostart(icon):
-    toggleAutostartInConfig()
     new_menu = (
         item(itemTitle, toggleAutostart),
         item(
@@ -79,7 +74,7 @@ def initTray():
         itemTitle = "Enable Autostart"
 
     menu = (
-        item(title, iconTrayClicked, default=True, visible=False),
+        item(dH.APP_NAME, iconTrayClicked, default=True, visible=False),
         item(itemTitle, toggleAutostart),
         item(
             "Save current monitor layout (used when enabling)",
@@ -100,5 +95,5 @@ def initTray():
     else:
         firstImageIcon = imageIconDisabled
 
-    icon = pystray.Icon(title, firstImageIcon, title, menu)
+    icon = pystray.Icon(dH.APP_NAME, firstImageIcon, dH.APP_NAME, menu)
     icon.run()
