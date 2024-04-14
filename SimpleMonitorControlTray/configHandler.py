@@ -26,10 +26,10 @@ def check_for_missing_files():
 
     if not os.path.exists(MULTIMONITORTOOL_PATH):
         nH.sendError(MULTIMONITORTOOL_PATH + fileNotFound)
-        tH.quitItemClicked()
+        tH.exitItemClicked()
     if not os.path.exists(os.path.join(currentPath, asset_iconEnabled)):
         nH.sendError(asset_iconDisabled + fileNotFound)
-        tH.quitItemClicked()
+        tH.exitItemClicked()
 
     if not os.path.exists(CSV_FILE_PATH):
         mH.saveMultiMonitorToolConfig()
@@ -47,11 +47,11 @@ def check_for_missing_files():
 
 def read_config():
 
-    global MULTIMONITORTOOL_PATH, CSV_FILE_PATH, MM_CONFIG_FILE_PATH, MONITOR_NAME
+    global AUTOSTART, MULTIMONITORTOOL_PATH, CSV_FILE_PATH, MM_CONFIG_FILE_PATH, MONITOR_NAME
 
     if not os.path.exists(config_file_path):
         nH.sendError(config_file_path + fileNotFound)
-        tH.quitItemClicked()
+        tH.exitItemClicked()
 
     config = configparser.ConfigParser()
 
@@ -59,7 +59,23 @@ def read_config():
 
     MULTIMONITORTOOL_PATH = config.get("SETTINGS", "multimonitorpath")
     MONITOR_NAME = config.get("SETTINGS", "monitor_name")
+    AUTOSTART = config.get("SETTINGS", "autostart")
     CSV_FILE_PATH = config.get("DEV", "mm_csv_export_path")
     MM_CONFIG_FILE_PATH = config.get("DEV", "mm_config_file_path")
 
     check_for_missing_files()
+
+
+def set_config_value(category, key, value):
+    config = configparser.ConfigParser()
+    config.read(config_file_path, encoding="utf-8")
+    config[category][key] = value
+    with open(config_file_path, "w") as configfile:
+        config.write(configfile)
+    print("Setting config value: " + key + " to " + value)
+
+
+def get_config_value(category, key):
+    config = configparser.ConfigParser()
+    config.read(config_file_path, encoding="utf-8")
+    return config.get(category, key)

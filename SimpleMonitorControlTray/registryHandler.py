@@ -14,6 +14,9 @@ def add_to_autostart():
 
 
 def remove_from_autostart():
-    key = reg.OpenKey(reg.HKEY_CURRENT_USER, registry_key, 0, reg.KEY_ALL_ACCESS)
-    reg.DeleteValue(key, keyName)
-    reg.CloseKey(key)
+    try:
+        key = reg.OpenKey(reg.HKEY_CURRENT_USER, registry_key, 0, reg.KEY_ALL_ACCESS)
+        reg.DeleteValue(key, keyName)
+        reg.CloseKey(key)
+    except:
+        pass

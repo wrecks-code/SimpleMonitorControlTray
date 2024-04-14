@@ -6,6 +6,7 @@ from pystray import MenuItem as item
 
 import SimpleMonitorControlTray.configHandler as cH
 import SimpleMonitorControlTray.monitorHandler as mH
+import SimpleMonitorControlTray.registryHandler as rH
 
 script_dir = os.getcwd()
 
@@ -15,6 +16,7 @@ imageIconDisabled = Image.open(os.path.join(script_dir, "assets\iconDisabled.png
 title = "SimpleMonitorControlTray"
 
 icon = None
+itemTitle = ""
 
 
 def saveMultiMonitorToolConfigClicked():
@@ -31,7 +33,7 @@ def iconTrayClicked():
         icon.icon = imageIconEnabled
 
 
-def quitItemClicked():
+def exitItemClicked():
     icon.stop()
 
 
@@ -39,34 +41,50 @@ def openConfigClicked():
     os.startfile(os.path.join(script_dir, cH.config_file_path))
 
 
-checked = False
+def toggleAutostartInConfig():
+    global itemTitle
+    if cH.AUTOSTART == "False":
+        itemTitle = "Disable Autostart"
+        rH.add_to_autostart()
+        cH.set_config_value("SETTINGS", "autostart", "True")
+        cH.AUTOSTART = "True"
+    else:
+        itemTitle = "Enable Autostart"
+        rH.remove_from_autostart()
+        cH.set_config_value("SETTINGS", "autostart", "False")
+        cH.AUTOSTART = "False"
 
 
 def toggleAutostart(icon):
-    # Recreate the menu with the updated title for "Autostart"
+    toggleAutostartInConfig()
     new_menu = (
-        item("New Title", toggleAutostart),
+        item(itemTitle, toggleAutostart),
         item(
             "Save current monitor layout (used when enabling)",
             saveMultiMonitorToolConfigClicked,
         ),
         item("Open Config.ini", openConfigClicked),
-        item("Quit", quitItemClicked),
+        item("Exit", exitItemClicked),
     )
     icon.menu = new_menu
 
 
 def initTray():
     global icon
+    if cH.AUTOSTART == "True":
+        itemTitle = "Disable Autostart"
+    else:
+        itemTitle = "Enable Autostart"
+
     menu = (
         item(title, iconTrayClicked, default=True, visible=False),
-        item("Autostart", toggleAutostart),
+        item(itemTitle, toggleAutostart),
         item(
             "Save current monitor layout (used when enabling)",
             saveMultiMonitorToolConfigClicked,
         ),
         item("Open Config.ini", openConfigClicked),
-        item("Quit", quitItemClicked),
+        item("Quit", exitItemClicked),
     )
 
     firstImageIcon = None
