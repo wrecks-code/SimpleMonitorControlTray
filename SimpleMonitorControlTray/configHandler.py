@@ -51,7 +51,7 @@ def read_config():
 
     global AUTOSTART, MULTIMONITORTOOL_PATH, CSV_FILE_PATH, MM_CONFIG_FILE_PATH, MONITOR_NAME
 
-    if not os.path.exists(config_file_path):
+    if not os.path.exists(os.path.join(currentPath, asset_iconEnabled)):
         nH.sendError(config_file_path + fileNotFound)
         tH.exitItemClicked()
 

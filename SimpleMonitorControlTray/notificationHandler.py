@@ -1,11 +1,10 @@
-import threading
-
-from win10toast import ToastNotifier
+# from win10toast import ToastNotifier
 
 
 def sendError(text):
-    toaster = ToastNotifier()
-    toaster.show_toast("Error", text, duration=7)
+    # toaster = ToastNotifier()
+    # toaster.show_toast("Error", text, duration=7)
+    pass
 
 
 def sendNotification(text, duration):

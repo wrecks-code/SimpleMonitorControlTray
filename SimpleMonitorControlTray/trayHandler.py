@@ -4,12 +4,13 @@ import pystray
 from PIL import Image
 from pystray import MenuItem as item
 
+import main
 import SimpleMonitorControlTray.configHandler as cH
 import SimpleMonitorControlTray.monitorHandler as mH
 import SimpleMonitorControlTray.registryHandler as rH
 
 # TODO this returns the wrong path (System32) if run from registry autostart
-script_dir = os.getcwd()
+script_dir = main.script_dir
 
 imageIconEnabled = Image.open(os.path.join(script_dir, "assets\iconEnabled.png"))
 imageIconDisabled = Image.open(os.path.join(script_dir, "assets\iconDisabled.png"))
@@ -85,7 +86,7 @@ def initTray():
             saveMultiMonitorToolConfigClicked,
         ),
         item("Open Config.ini", openConfigClicked),
-        item("Quit", exitItemClicked),
+        item("Exit", exitItemClicked),
     )
 
     firstImageIcon = None

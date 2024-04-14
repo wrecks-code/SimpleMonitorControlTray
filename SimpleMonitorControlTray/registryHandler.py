@@ -1,9 +1,11 @@
 import os
 import winreg as reg
 
+import main
+
 keyName = "SimpleMonitorControlTray"
 
-exe_path = os.path.join(os.getcwd(), keyName + ".exe")
+exe_path = os.path.join(main.script_dir, keyName + ".exe")
 registry_key = r"Software\Microsoft\Windows\CurrentVersion\Run"
 
 
