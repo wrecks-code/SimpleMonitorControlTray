@@ -21,7 +21,9 @@ def isAutostartKeyinRegistry():
 
 def add_to_autostart():
     key = reg.OpenKey(reg.HKEY_CURRENT_USER, registry_key, 0, reg.KEY_WRITE)
-    reg.SetValueEx(key, keyName, 0, reg.REG_SZ, exe_path)
+    reg.SetValueEx(
+        key, keyName, 0, reg.REG_SZ, f'"{exe_path[0].upper() + exe_path[1:]}"'
+    )
     reg.CloseKey(key)
 
 

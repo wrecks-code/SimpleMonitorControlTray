@@ -4,16 +4,16 @@ import pystray
 from PIL import Image
 from pystray import MenuItem as item
 
-import SimpleMonitorControlTrayModule.autoStartHandler as aH
 import SimpleMonitorControlTrayModule.configHandler as cH
 import SimpleMonitorControlTrayModule.directoryHandler as dH
 import SimpleMonitorControlTrayModule.monitorHandler as mH
+import SimpleMonitorControlTrayModule.registryHandler as rH
 
 icon = None
 itemTitle = ""
 
 script_dir = dH.getDirectory()
-assets_dir = script_dir + "\\assets"
+assets_dir = script_dir + r"\assets"
 
 imageIconEnabled = Image.open(os.path.join(assets_dir, "iconEnabled.png"))
 imageIconDisabled = Image.open(os.path.join(assets_dir, "iconDisabled.png"))
@@ -45,12 +45,14 @@ def toggleAutostart(icon):
     global itemTitle
     if cH.AUTOSTART == "False":
         itemTitle = "Disable Autostart"
-        aH.addShortcutToStartupFolder()
+        # aH.addShortcutToStartupFolder()
+        rH.add_to_autostart()
         cH.set_config_value("SETTINGS", "autostart", "True")
         cH.AUTOSTART = "True"
     else:
         itemTitle = "Enable Autostart"
-        aH.removeShortcutFromStartupFolder()
+        # aH.removeShortcutFromStartupFolder()
+        rH.remove_from_autostart()
         cH.set_config_value("SETTINGS", "autostart", "False")
         cH.AUTOSTART = "False"
 
