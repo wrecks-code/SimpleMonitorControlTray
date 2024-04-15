@@ -2,15 +2,20 @@ import configparser
 import os
 
 import SimpleMonitorControlTrayModule.directoryHandler as dH
-import SimpleMonitorControlTrayModule.monitorHandler as mH
+import SimpleMonitorControlTrayModule.multiMonitorToolHandler as mH
 import SimpleMonitorControlTrayModule.notificationHandler as nH
-import SimpleMonitorControlTrayModule.trayHandler as tH
+import SimpleMonitorControlTrayModule.registryHandler as rH
 
 config_file_path = dH.getDirectory() + r"\config.ini"
-asset_iconEnabled_path = dH.getDirectory() + r"\assets\iconEnabled.png"
-asset_iconDisabled_path = dH.getDirectory() + r"\assets\iconDisabled.png"
+assets_folder_path = dH.getDirectory() + r"\assets"
+temp_folder_path = dH.getDirectory() + r"\temp"
 
-fileNotFound = " file not found. Exiting."
+mmt_csv_export_path = temp_folder_path + r"\MultiMonitorToolOutput.csv"
+mmt_config_path = temp_folder_path + r"\MultiMonitorToolConfig"
+asset_iconEnabled_path = assets_folder_path + r"\iconEnabled.png"
+asset_iconDisabled_path = assets_folder_path + r"\iconDisabled.png"
+
+fileNotFoundString = " file not found. Exiting."
 
 MULTIMONITORTOOL_PATH, MONITOR_NAME, AUTOSTART = (
     "",
@@ -18,33 +23,29 @@ MULTIMONITORTOOL_PATH, MONITOR_NAME, AUTOSTART = (
     False,
 )
 
-CSV_FILE_PATH = dH.getDirectory() + r"\MultiMonitorTool\multiMonitorToolOutput.csv"
-MM_CONFIG_FILE_PATH = dH.getDirectory() + r"\MultiMonitorTool\MultiMonitorToolConfig"
-
-"""[DEV]
-mm_csv_export_path = MultiMonitorTool\multiMonitorToolOutput.csv
-mm_config_file_path = MultiMonitorTool\MultiMonitorToolConfig"""
-
 
 def check_for_missing_files():
+    # Check for IconEnabled
+    if not os.path.exists(asset_iconEnabled_path):
+        nH.sendError(asset_iconEnabled_path + fileNotFoundString)
 
+    # Check for IconDisabled
+    if not os.path.exists(asset_iconDisabled_path):
+        nH.sendError(asset_iconDisabled_path + fileNotFoundString)
+
+    # Check for MultiMonitorTool
     if not os.path.exists(MULTIMONITORTOOL_PATH):
-        nH.sendError(MULTIMONITORTOOL_PATH + fileNotFound)
-        tH.exitItemClicked()
-    if not os.path.exists(os.path.join(dH.getDirectory(), asset_iconEnabled_path)):
-        nH.sendError(asset_iconDisabled_path + fileNotFound)
-        tH.exitItemClicked()
+        nH.sendError(MULTIMONITORTOOL_PATH + fileNotFoundString)
 
-    if not os.path.exists(CSV_FILE_PATH):
+    # Check for temp folder
+    if not os.path.exists(temp_folder_path):
+        os.makedirs(temp_folder_path)
+
+    # Check for MultiMonitorTool CSV
+    if not os.path.exists(mmt_csv_export_path):
         mH.saveMultiMonitorToolConfig()
 
-    multiMonitorToolOutputPath = dH.getDirectory() + r"\MultiMonitorTool"
-
-    if not os.path.exists(multiMonitorToolOutputPath):
-        os.makedirs(multiMonitorToolOutputPath)
-
-    # TODO add assets folder check
-
+    # TODO add notification logic
     nH.sendNotification(
         "If you do not have all Monitors enabled and configured as you like right now, please do so and then right click the tray icon and save the configuration",
         20,
@@ -52,12 +53,11 @@ def check_for_missing_files():
 
 
 def read_config():
+    # Check if config.ini file is present
+    if not os.path.exists(config_file_path):
+        nH.sendError(config_file_path + fileNotFoundString)
 
     global AUTOSTART, MULTIMONITORTOOL_PATH, MONITOR_NAME
-
-    if not os.path.exists(os.path.join(dH.getDirectory(), asset_iconEnabled_path)):
-        nH.sendError(asset_iconEnabled_path + fileNotFound)
-        tH.exitItemClicked()
 
     config = configparser.ConfigParser()
 

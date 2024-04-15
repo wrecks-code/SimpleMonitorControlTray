@@ -1,9 +1,11 @@
 # from win10toast import ToastNotifier
+# import SimpleMonitorControlTrayModule.trayHandler as tH
 
 
 def sendError(text):
     # toaster = ToastNotifier()
     # toaster.show_toast("Error", text, duration=7)
+    # tH.exitItemClicked()
     pass
 
 

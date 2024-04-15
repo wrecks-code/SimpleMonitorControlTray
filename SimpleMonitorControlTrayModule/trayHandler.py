@@ -6,17 +6,14 @@ from pystray import MenuItem as item
 
 import SimpleMonitorControlTrayModule.configHandler as cH
 import SimpleMonitorControlTrayModule.directoryHandler as dH
-import SimpleMonitorControlTrayModule.monitorHandler as mH
+import SimpleMonitorControlTrayModule.multiMonitorToolHandler as mH
 import SimpleMonitorControlTrayModule.registryHandler as rH
 
 icon = None
 itemTitle = ""
 
-script_dir = dH.getDirectory()
-assets_dir = script_dir + r"\assets"
-
-imageIconEnabled = Image.open(os.path.join(assets_dir, "iconEnabled.png"))
-imageIconDisabled = Image.open(os.path.join(assets_dir, "iconDisabled.png"))
+imageIconEnabled = Image.open(cH.asset_iconEnabled_path)
+imageIconDisabled = Image.open(cH.asset_iconDisabled_path)
 
 
 def saveMultiMonitorToolConfigClicked():
@@ -38,20 +35,18 @@ def exitItemClicked():
 
 
 def openConfigClicked():
-    os.startfile(os.path.join(script_dir, cH.config_file_path))
+    os.startfile(cH.config_file_path)
 
 
 def toggleAutostart(icon):
     global itemTitle
     if cH.AUTOSTART == "False":
         itemTitle = "Disable Autostart"
-        # aH.addShortcutToStartupFolder()
         rH.add_to_autostart()
         cH.set_config_value("SETTINGS", "autostart", "True")
         cH.AUTOSTART = "True"
     else:
         itemTitle = "Enable Autostart"
-        # aH.removeShortcutFromStartupFolder()
         rH.remove_from_autostart()
         cH.set_config_value("SETTINGS", "autostart", "False")
         cH.AUTOSTART = "False"
@@ -59,7 +54,7 @@ def toggleAutostart(icon):
     new_menu = (
         item(itemTitle, toggleAutostart),
         item(
-            "Save current monitor layout (used when enabling)",
+            "Save current monitor layout",
             saveMultiMonitorToolConfigClicked,
         ),
         item("Open Config.ini", openConfigClicked),
@@ -79,7 +74,7 @@ def initTray():
         item(dH.APP_NAME, iconTrayClicked, default=True, visible=False),
         item(itemTitle, toggleAutostart),
         item(
-            "Save current monitor layout (used when enabling)",
+            "Save current monitor layout",
             saveMultiMonitorToolConfigClicked,
         ),
         item("Open Config.ini", openConfigClicked),
@@ -92,7 +87,7 @@ def initTray():
 
     if mH.isMonitorEnabled():
         firstImageIcon = imageIconEnabled
-        if not os.path.exists(cH.MM_CONFIG_FILE_PATH):
+        if not os.path.exists(cH.mmt_config_path):
             mH.saveMultiMonitorToolConfig()
     else:
         firstImageIcon = imageIconDisabled
