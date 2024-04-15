@@ -5,9 +5,10 @@ import SimpleMonitorControlTrayModule.directoryHandler as dH
 import SimpleMonitorControlTrayModule.multiMonitorToolHandler as mH
 import SimpleMonitorControlTrayModule.notificationHandler as nH
 
-config_file_path = dH.getDirectory() + r"\config.ini"
-assets_folder_path = dH.getDirectory() + r"\assets"
-temp_folder_path = dH.getDirectory() + r"\temp"
+base_path = dH.getDirectory()
+config_file_path = base_path + r"\config.ini"
+assets_folder_path = base_path + r"\assets"
+temp_folder_path = base_path + r"\temp"
 
 mmt_csv_export_path = temp_folder_path + r"\MultiMonitorToolOutput.csv"
 mmt_config_path = temp_folder_path + r"\MultiMonitorToolConfig"
