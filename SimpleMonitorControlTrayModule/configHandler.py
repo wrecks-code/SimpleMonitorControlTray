@@ -53,7 +53,7 @@ def check_for_missing_files():
 
 def read_config():
 
-    global AUTOSTART, MULTIMONITORTOOL_PATH, CSV_FILE_PATH, MM_CONFIG_FILE_PATH, MONITOR_NAME
+    global AUTOSTART, MULTIMONITORTOOL_PATH, MONITOR_NAME
 
     if not os.path.exists(os.path.join(dH.getDirectory(), asset_iconEnabled_path)):
         nH.sendError(asset_iconEnabled_path + fileNotFound)
