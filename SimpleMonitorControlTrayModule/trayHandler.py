@@ -10,10 +10,18 @@ import SimpleMonitorControlTrayModule.multiMonitorToolHandler as mH
 import SimpleMonitorControlTrayModule.registryHandler as rH
 
 icon = None
-itemTitle = ""
 
 imageIconEnabled = Image.open(cH.asset_iconEnabled_path)
 imageIconDisabled = Image.open(cH.asset_iconDisabled_path)
+
+# Strings
+startupWithWindowsString = "Startup with Windows"
+saveCurrentMonitorLayoutString = "Save current monitor layout"
+openFolderString = "Open Folder"
+exitString = "Exit"
+
+configKeysSettingsString = "SETTINGS"
+configKeysAutostartString = "autostart"
 
 
 def saveMultiMonitorToolConfigClicked():
@@ -34,55 +42,58 @@ def exitItemClicked():
     icon.stop()
 
 
-def openConfigClicked():
-    os.startfile(cH.config_file_path)
+def openFolderClicked():
+    os.startfile(dH.getDirectory())
 
 
 def toggleAutostart(icon):
-    global itemTitle
     if cH.AUTOSTART == "False":
-        itemTitle = "Disable Autostart"
         rH.add_to_autostart()
-        cH.set_config_value("SETTINGS", "autostart", "True")
+        cH.set_config_value(configKeysSettingsString, configKeysAutostartString, "True")
         cH.AUTOSTART = "True"
     else:
-        itemTitle = "Enable Autostart"
         rH.remove_from_autostart()
-        cH.set_config_value("SETTINGS", "autostart", "False")
+        cH.set_config_value(
+            configKeysSettingsString, configKeysAutostartString, "False"
+        )
         cH.AUTOSTART = "False"
 
     new_menu = (
-        item(itemTitle, toggleAutostart),
+        item(
+            startupWithWindowsString,
+            toggleAutostart,
+            checked=lambda icon: rH.isAutostartKeyinRegistry(),
+        ),
         pystray.Menu.SEPARATOR,
         item(
-            "Save current monitor layout",
+            saveCurrentMonitorLayoutString,
             saveMultiMonitorToolConfigClicked,
         ),
-        item("Open Config.ini", openConfigClicked),
+        item(openFolderString, openFolderClicked),
         pystray.Menu.SEPARATOR,
-        item("Exit", exitItemClicked),
+        item(exitString, exitItemClicked),
     )
     icon.menu = new_menu
 
 
 def initTray():
     global icon
-    if cH.AUTOSTART == "True":
-        itemTitle = "Disable Autostart"
-    else:
-        itemTitle = "Enable Autostart"
 
     menu = (
         item(dH.APP_NAME, iconTrayClicked, default=True, visible=False),
-        item(itemTitle, toggleAutostart),
+        item(
+            startupWithWindowsString,
+            toggleAutostart,
+            checked=lambda icon: rH.isAutostartKeyinRegistry(),
+        ),
         pystray.Menu.SEPARATOR,
         item(
-            "Save current monitor layout",
+            saveCurrentMonitorLayoutString,
             saveMultiMonitorToolConfigClicked,
         ),
-        item("Open Config.ini", openConfigClicked),
+        item(openFolderString, openFolderClicked),
         pystray.Menu.SEPARATOR,
-        item("Exit", exitItemClicked),
+        item(exitString, exitItemClicked),
     )
 
     firstImageIcon = None
