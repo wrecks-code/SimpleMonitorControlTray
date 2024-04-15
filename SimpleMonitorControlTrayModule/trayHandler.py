@@ -73,11 +73,13 @@ def initTray():
     menu = (
         item(dH.APP_NAME, iconTrayClicked, default=True, visible=False),
         item(itemTitle, toggleAutostart),
+        pystray.Menu.SEPARATOR,
         item(
             "Save current monitor layout",
             saveMultiMonitorToolConfigClicked,
         ),
         item("Open Config.ini", openConfigClicked),
+        pystray.Menu.SEPARATOR,
         item("Exit", exitItemClicked),
     )
 
