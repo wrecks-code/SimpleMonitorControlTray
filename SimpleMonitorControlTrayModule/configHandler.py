@@ -16,6 +16,7 @@ asset_iconDisabled_path = assets_folder_path + r"\iconDisabled.png"
 
 fileNotFoundString = " file not found. Exiting."
 
+# TODO: change MONITOR_NAME to actual name or id
 MULTIMONITORTOOL_PATH, MONITOR_NAME, AUTOSTART, FIRST_START = (
     "",
     "",
