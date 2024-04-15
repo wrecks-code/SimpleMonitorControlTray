@@ -53,11 +53,13 @@ def toggleAutostart(icon):
 
     new_menu = (
         item(itemTitle, toggleAutostart),
+        pystray.Menu.SEPARATOR,
         item(
             "Save current monitor layout",
             saveMultiMonitorToolConfigClicked,
         ),
         item("Open Config.ini", openConfigClicked),
+        pystray.Menu.SEPARATOR,
         item("Exit", exitItemClicked),
     )
     icon.menu = new_menu
