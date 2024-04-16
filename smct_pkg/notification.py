@@ -4,12 +4,12 @@ from win10toast import ToastNotifier
 
 
 # TODO: add Logic
-def sendError(text):
+def send_error(text):
     toaster = ToastNotifier()
     toaster.show_toast("Error", text, duration=7)
 
 
-def sendNotification(text, duration):
+def send_notification(text, duration):
     def show_notification():
         toaster = ToastNotifier()
         toaster.show_toast("It's your first startup!", text, duration=duration)
