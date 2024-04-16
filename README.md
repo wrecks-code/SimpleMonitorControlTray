@@ -28,7 +28,7 @@ Monitor turned off: <br>
 
 ## Usage
 
-1. Double-click `SimpleMonitorControlTray.exe` to start the program.
+1. Double-click `SimpleMonitorControlTray.exe` to start.
 2. The program will run in the system tray.
 3. Left-click to switch on/off your selected monitor (icon turns blue/red).
 4. More options can be found by right clicking.
