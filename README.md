@@ -44,4 +44,10 @@ Monitor turned off: <br>
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is released under the GNU General Public License (GPL) version 3.0. See the [LICENSE](LICENSE) file for details.
+
+---
+
+GNU General Public License (GPL) version 3.0
+
+[GPL License Text](https://www.gnu.org/licenses/gpl-3.0.html)
