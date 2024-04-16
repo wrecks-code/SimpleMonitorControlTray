@@ -91,7 +91,9 @@ def init_tray():
     else:
         first_image_icon = icon_disabled_image
 
-    icon = pystray.Icon(
+    # pylint: disable=global-statement
+    global ICON
+    ICON = pystray.Icon(
         ui_strings.APP_NAME, first_image_icon, ui_strings.APP_NAME, menu
     )
-    icon.run()
+    ICON.run()
