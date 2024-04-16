@@ -24,7 +24,10 @@ Monitor turned off: <br>
 1. Download the [latest release](https://github.com/wrecks-code/SimpleMonitorControlTray/releases/latest) and unzip
 2. Download MultiMonitorTool and unzip
 3. Open up config.ini found inside SimpleMonitorControlTray and edit the path to your MultiMonitorTool.exe
-4. That's it! You're ready to use SimpleMonitorControlTray.
+4. Run multimonitortool.exe /scomma monitorlist
+5. Check the generated csv file for the correct monitor and copy its "Monitor Name" value
+6. Add the name to the config.ini file
+7. That's it! You're ready to use SimpleMonitorControlTray.
 
 ## Usage
 
