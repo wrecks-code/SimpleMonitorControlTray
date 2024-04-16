@@ -7,7 +7,11 @@ SimpleMonitorControlTray is a small Python program that allows you to easily ena
 - Toggle the state of a specified monitor with a single click.
 - Save monitor layout that will be restored when enabling a monitor (to keep orientation, positioning, etc.)
 
+Monitor turned on: <br>
 ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/cdad92e9-95b9-4a47-b8d4-4a691c18fef4)
+
+Monitor turned off: <br>
+![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/319efc4a-24e0-4ee0-a346-15fa44001169)
 
 
 ## Requirements
@@ -34,8 +38,8 @@ SimpleMonitorControlTray is a small Python program that allows you to easily ena
 
 ## Notes
 
-- Autostart places a regkey inside `Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run`
-- A default layout will be saved on first startup, you can overwrite it by right-clicking and selecting the fitting option.
+- "Startup with Windows" places a regkey inside `Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run`, it can be removed by clicking it again.
+- A default layout will be saved on first startup, you can overwrite it by right-clicking and selecting "Save current monitor layout".
 - If you encounter any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
 
 ## License
