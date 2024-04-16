@@ -1,10 +1,6 @@
-import smct_pkg.config as config
-import smct_pkg.tray as tray
-
+from smct_pkg import config, tray
 
 # TODO add selection of monitor at startup
-# TODO clean up imports like so:
-# import smct_pkg.config
 
 
 def main():

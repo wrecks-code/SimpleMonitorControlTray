@@ -1,16 +1,15 @@
 import winreg
 
-import smct_pkg.paths as paths
-import smct_pkg.ui_strings as ui_strings
+from smct_pkg import paths, ui_strings
 
-keyName = ui_strings.APP_NAME
-registry_key = r"Software\Microsoft\Windows\CurrentVersion\Run"
+KEY_NAME = ui_strings.APP_NAME
+REGISTRY_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
 
 
 def is_autostartkey_in_registry():
     try:
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, registry_key)
-        value, _ = winreg.QueryValueEx(key, keyName)
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, REGISTRY_KEY)
+        _ = winreg.QueryValueEx(key, KEY_NAME)
         winreg.CloseKey(key)
         return True
     except FileNotFoundError:
@@ -18,10 +17,10 @@ def is_autostartkey_in_registry():
 
 
 def add_to_autostart():
-    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, registry_key, 0, winreg.KEY_WRITE)
+    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, REGISTRY_KEY, 0, winreg.KEY_WRITE)
     winreg.SetValueEx(
         key,
-        keyName,
+        KEY_NAME,
         0,
         winreg.REG_SZ,
         f'"{paths.EXE_PATH[0].upper() + paths.EXE_PATH[1:]}"',
@@ -32,9 +31,9 @@ def add_to_autostart():
 def remove_from_autostart():
     try:
         key = winreg.OpenKey(
-            winreg.HKEY_CURRENT_USER, registry_key, 0, winreg.KEY_ALL_ACCESS
+            winreg.HKEY_CURRENT_USER, REGISTRY_KEY, 0, winreg.KEY_ALL_ACCESS
         )
-        winreg.DeleteValue(key, keyName)
+        winreg.DeleteValue(key, KEY_NAME)
         winreg.CloseKey(key)
-    except:
-        pass
+    except (FileNotFoundError, PermissionError) as e:
+        print(f"Error occurred while removing from autostart: {e}")
