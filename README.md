@@ -1,10 +1,12 @@
 # SimpleMonitorControlTray
 
-SimpleMonitorControlTray is a small Python program that allows you to easily enable and disable a specified monitor using MultiMonitorTool.exe. Simply click the icon in the system tray to toggle the monitor state.
+Older flat TVs which can be easily used as a optional monitor in Windows. However, the TV cannot detect if it's receiving a signal and therefore doesn't turn on by itself. If you have any windows on the turned off TV you can't access them easily without opening the Windows Settings.
+
+SimpleMonitorControlTray is a small Python program that tries to solve this problem by letting you to easily enable and disable a specified monitor using MultiMonitorTool.exe. Simply click the icon in the system tray to toggle the monitor state.
 
 ## Features
 
-- Toggle the state of a specified monitor with a single click.
+- Toggle the state of a specified monitor/TV with a single click.
 - Save monitor layout that will be restored when enabling a monitor (to keep orientation, positioning, etc.)
 
 Monitor turned on: <br>
@@ -21,22 +23,23 @@ Monitor turned off: <br>
 
 ## Installation
 
-1. Download the [latest release](https://github.com/wrecks-code/SimpleMonitorControlTray/releases/latest) and unzip
-2. Download MultiMonitorTool and unzip
-3. Open up config.ini found inside SimpleMonitorControlTray and edit the path to your MultiMonitorTool.exe
-4. Run multimonitortool.exe /scomma monitorlist
-5. Check the generated csv file for the correct monitor and copy its "Monitor Name" value
-6. Add the name to the config.ini file
-7. That's it! You're ready to use SimpleMonitorControlTray.
+1. Download the [latest release](https://github.com/wrecks-code/SimpleMonitorControlTray/releases/latest) and unzip anywhere
+2. Download MultiMonitorTool and unzip anywhere
 
 ## Usage
 
 1. Double-click `SimpleMonitorControlTray.exe` to start.
-2. The program will run in the system tray.
-3. Left-click to switch on/off your selected monitor (icon turns blue/red).
-4. More options can be found by right clicking.
+2. The program will prompt you to Browse for your `MultiMonitorTool.exe path`<br>
+
+   ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/753a59a9-02f0-458d-8e0d-ac7fe3789a51)
+
+3. Select the monitor that will be toggled by clicking the tray icon<br>
+
+   ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/9561bd49-7f1a-4bb1-bafc-4ced81ab40d5)
+
+5. More options can be found by right clicking the tray icon
    
-![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/40826a9e-c197-4c9d-9b5e-62dd208503c9)
+   ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/40826a9e-c197-4c9d-9b5e-62dd208503c9)
 
 
 ## Notes
@@ -44,6 +47,8 @@ Monitor turned off: <br>
 - "Startup with Windows" places a regkey inside `Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run`, it can be removed by clicking it again.
 - A default layout will be saved on first startup, you can overwrite it by right-clicking and selecting "Save current monitor layout".
 - If you encounter any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
+
+- I used this project mainly to get a feel for python developing. I learned a lot from this.
 
 ## License
 
