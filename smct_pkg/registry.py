@@ -35,5 +35,6 @@ def remove_from_autostart():
         )
         winreg.DeleteValue(key, KEY_NAME)
         winreg.CloseKey(key)
-    except (FileNotFoundError, PermissionError) as e:
-        print(f"Error occurred while removing from autostart: {e}")
+    except (FileNotFoundError, PermissionError):
+        # print(f"Error occurred while removing from autostart: {e}")
+        pass

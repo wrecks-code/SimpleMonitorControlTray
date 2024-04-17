@@ -1,7 +1,26 @@
-import csv
 import subprocess
 
+import pandas as pd
 from smct_pkg import config, paths
+
+
+def _get_monitor_df():
+    _run_mmt_command("/scomma", paths.MMT_CSV_PATH)
+    _monitor_df = []
+
+    data = pd.read_csv(paths.MMT_CSV_PATH)
+    for index in range(len(data)):
+        _monitor_df.append(data.iloc[index])
+    return _monitor_df
+
+
+def get_monitor_selection_list():
+    _monitor_selection_list = []
+    for _monitor in _get_monitor_df():
+        _monitor_name = _monitor["Monitor Name"]
+        _monitor_serial = _monitor["Monitor Serial Number"]
+        _monitor_selection_list.append(f"{_monitor_name} | {_monitor_serial}")
+    return _monitor_selection_list
 
 
 def _run_mmt_command(command, destination):
@@ -15,15 +34,11 @@ def _run_mmt_command(command, destination):
             check=True,
         )
     except subprocess.CalledProcessError as error:
-        print(f"MultiMonitorTool.exe {command} failed: {error}")
+        print(f"{config.MMT_PATH_VALUE} {command} {destination} failed: {error}")
 
 
 def save_mmt_config():
     _run_mmt_command("/SaveConfig", paths.MMT_CONFIG_PATH)
-
-
-def update_mmt_csv():
-    _run_mmt_command("/scomma", paths.MMT_CSV_PATH)
 
 
 def enable_monitor():
@@ -34,67 +49,22 @@ def disable_monitor():
     _run_mmt_command("/disable", get_monitor_id())
 
 
-# TODO Encoding Issue?
-
-
 def get_monitor_id():
-    with open(paths.MMT_CSV_PATH, "r", encoding=config.ENCODING) as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            try:
-                if row["Monitor Name"] == config.MONITOR_NAME_VALUE:
-                    monitor_id = row["Name"]
-                    return monitor_id[-1]
-            except KeyError:
-                pass
-    return 0
+    for monitor in _get_monitor_df():
+        if (
+            monitor["Monitor Name"] == config.MONITOR_NAME_VALUE
+            and str(monitor["Monitor Serial Number"]) == config.MONITOR_SERIAL_VALUE
+        ):
+            _id = monitor["Name"]
+            return _id[-1]
 
 
 def is_monitor_enabled():
-    with open(paths.MMT_CSV_PATH, "r", encoding=config.ENCODING) as file:
-        reader = csv.DictReader(file)
-
-        for row in reader:
-            try:
-                monitor_name = row["Monitor Name"]
-                monitor_active = row["Active"]
-                if (
-                    monitor_name == config.MONITOR_NAME_VALUE
-                    and monitor_active.upper() == "YES"
-                ):
-                    return True
-            except KeyError:
-                pass
+    for monitor in _get_monitor_df():
+        if (
+            monitor["Monitor Name"] == config.MONITOR_NAME_VALUE
+            and str(monitor["Monitor Serial Number"]) == config.MONITOR_SERIAL_VALUE
+            and monitor["Active"].upper() == "YES"
+        ):
+            return True
     return False
-
-
-"""
-def get_monitor_id():
-    with open(paths.MMT_CSV_PATH, "r", encoding=config.ENCODING) as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            try:
-                if row["Monitor Name"] == config.MONITOR_NAME_VALUE:
-                    monitor_id = row["Name"]
-                    return monitor_id[-1]
-            except KeyError:
-                pass
-    return 0
-
-
-def is_monitor_enabled():
-    with open(paths.MMT_CSV_PATH, "r", encoding=config.ENCODING) as file:
-        reader = csv.DictReader(file)
-
-        for row in reader:
-            try:
-                monitor_name = row["Monitor Name"]
-                monitor_active = row["Active"]
-                if (
-                    monitor_name == config.MONITOR_NAME_VALUE
-                    and monitor_active.upper() == "YES"
-                ):
-                    return True
-            except KeyError:
-                pass
-    return False"""

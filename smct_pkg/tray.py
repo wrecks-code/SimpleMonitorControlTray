@@ -17,7 +17,6 @@ def save_mmt_config_clicked():
 
 
 def icon_tray_clicked():
-    multimonitortool.update_mmt_csv()
     if multimonitortool.is_monitor_enabled():
         multimonitortool.disable_monitor()
         ICON.icon = icon_disabled_image
@@ -35,11 +34,13 @@ def open_folder_clicked():
 
 
 def startup_with_windows_clicked(icon):
-    config.AUTOSTART_VALUE = not config.AUTOSTART_VALUE
+    config.START_WITH_WINDOWS_VALUE = not config.START_WITH_WINDOWS_VALUE
     config.set_config_value(
-        config.SETTINGS_SECTION, config.START_WITH_WINDOWS_KEY, config.AUTOSTART_VALUE
+        config.SETTINGS_SECTION,
+        config.START_WITH_WINDOWS_KEY,
+        config.START_WITH_WINDOWS_VALUE,
     )
-    if config.AUTOSTART_VALUE:
+    if config.START_WITH_WINDOWS_VALUE:
         registry.add_to_autostart()
     else:
         registry.remove_from_autostart()
@@ -81,8 +82,6 @@ def init_tray():
     )
 
     first_image_icon = None
-
-    multimonitortool.update_mmt_csv()
 
     if multimonitortool.is_monitor_enabled():
         first_image_icon = icon_enabled_image

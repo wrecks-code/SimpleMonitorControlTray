@@ -1,7 +1,5 @@
 from smct_pkg import config, tray
 
-# TODO add selection of monitor at startup
-
 
 def main():
     config.read_config()

@@ -1,25 +1,33 @@
 import configparser
 import os
 
-from smct_pkg import multimonitortool, notification, paths, registry, ui_strings
+from smct_pkg import (
+    multimonitortool,
+    notification,
+    paths,
+    registry,
+    setup_gui,
+    ui_strings,
+)
 
 ENCODING = "utf-8"
 
 # keys
 SETTINGS_SECTION = "Settings"
 MONITOR_NAME_KEY = "monitor_name"
-MULTIMONITORTOOL_EXECUTABLE_KEY = "multimonitortool_executable"
+MONITOR_SERIAL_KEY = "monitor_serial"
+MMT_PATH_KEY = "multimonitortool_executable"
 START_WITH_WINDOWS_KEY = "start_with_windows"
 FIRT_START_KEY = "first_start"
 
 # values
 MMT_PATH_VALUE = ""
 MONITOR_NAME_VALUE = ""
-AUTOSTART_VALUE = False
+MONITOR_SERIAL_VALUE = ""
+START_WITH_WINDOWS_VALUE = False
 FIRST_START_VALUE = True
 
 _configparser = configparser.ConfigParser()
-_configparser.read(paths.CONFIG_PATH, encoding=ENCODING)
 
 
 def check_for_missing_files():
@@ -52,33 +60,44 @@ def check_for_missing_files():
 def read_config():
     # Check if config.ini file is present
     if not os.path.exists(paths.CONFIG_PATH):
-        notification.send_error(paths.CONFIG_PATH + ui_strings.FILE_NOT_FOUND)
+        _create_default_config_file()
+
+    _configparser.read(paths.CONFIG_PATH, encoding=ENCODING)
 
     # * pylint: disable=global-statement
-    global AUTOSTART_VALUE, MMT_PATH_VALUE, MONITOR_NAME_VALUE, FIRST_START_VALUE
+    global START_WITH_WINDOWS_VALUE, MMT_PATH_VALUE, MONITOR_NAME_VALUE, MONITOR_SERIAL_VALUE, FIRST_START_VALUE
 
-    MMT_PATH_VALUE = _configparser.get(
-        SETTINGS_SECTION, MULTIMONITORTOOL_EXECUTABLE_KEY
-    )
+    MMT_PATH_VALUE = _configparser.get(SETTINGS_SECTION, MMT_PATH_KEY)
     MONITOR_NAME_VALUE = _configparser.get(SETTINGS_SECTION, MONITOR_NAME_KEY)
-    AUTOSTART_VALUE = _configparser.getboolean(SETTINGS_SECTION, START_WITH_WINDOWS_KEY)
+    MONITOR_SERIAL_VALUE = _configparser.get(SETTINGS_SECTION, MONITOR_SERIAL_KEY)
+    START_WITH_WINDOWS_VALUE = _configparser.getboolean(
+        SETTINGS_SECTION, START_WITH_WINDOWS_KEY
+    )
     FIRST_START_VALUE = _configparser.getboolean(SETTINGS_SECTION, FIRT_START_KEY)
 
-    if AUTOSTART_VALUE:
+    if START_WITH_WINDOWS_VALUE:
         registry.add_to_autostart()
     else:
         registry.remove_from_autostart()
 
     if FIRST_START_VALUE:
-        # TODO: Do something else here
-        notification.send_notification(
-            "placeholder",
-            30,
-        )
+        setup_gui.init_mmt_selection_frame()
         FIRST_START_VALUE = False
         set_config_value(SETTINGS_SECTION, FIRT_START_KEY, FIRST_START_VALUE)
 
     check_for_missing_files()
+
+
+def _create_default_config_file():
+    _configparser["Settings"] = {
+        MONITOR_NAME_KEY: "Example Monitor",
+        MONITOR_SERIAL_KEY: "12345",
+        MMT_PATH_KEY: "C:/MultiMonitorTool.exe",
+        START_WITH_WINDOWS_KEY: "no",
+        FIRT_START_KEY: "yes",
+    }
+    with open(paths.CONFIG_PATH, "w", encoding=ENCODING) as _file_object:
+        _configparser.write(_file_object)
 
 
 def set_config_value(section, key, value):
