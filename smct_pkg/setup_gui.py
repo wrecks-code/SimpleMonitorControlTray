@@ -60,6 +60,8 @@ def _browse_button_callback():
         filetypes=[("MultiMonitorTool", "multimonitortool.exe")],
     )
     # TODO: if using auto-py-to-exe this returns the wrong path? -> crashes
+    # C:/App_Install/multimonitortool-x64/MultiMonitorTool.exe should the output be
+    # but its C:\\App_Install\\ etc. fix this.
     if not _exe_path:
         print(ui_strings.NO_FILE_SELECTED)
     else:
