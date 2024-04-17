@@ -29,7 +29,7 @@ Monitor turned off: <br>
 ## Usage
 
 1. Double-click `SimpleMonitorControlTray.exe` to start.
-2. The program will prompt you to Browse for your `MultiMonitorTool.exe path`<br>
+2. The program will prompt you to Browse for your `MultiMonitorTool.exe` path<br>
 
    ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/753a59a9-02f0-458d-8e0d-ac7fe3789a51)
 
