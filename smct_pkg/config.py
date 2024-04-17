@@ -1,12 +1,12 @@
 import configparser
 import os
+import sys
 
 from smct_pkg import (
-    multimonitortool,
     notification,
     paths,
     registry,
-    setup_gui,
+    ui,
     ui_strings,
 )
 
@@ -31,30 +31,21 @@ _configparser = configparser.ConfigParser()
 
 
 def check_for_missing_files():
-    # Check for assets folder
-    if not os.path.exists(paths.ASSETS_DIR_PATH):
-        os.makedirs(paths.ASSETS_DIR_PATH)
     # Check for Icons
     if not os.path.exists(paths.ASSETS_ICON_ENABLED_PATH):
         notification.send_error(
             paths.ASSETS_ICON_ENABLED_PATH + ui_strings.FILE_NOT_FOUND
         )
+        sys.exit(1)
     if not os.path.exists(paths.ASSETS_ICON_DISABLED_PATH):
         notification.send_error(
             paths.ASSETS_ICON_DISABLED_PATH + ui_strings.FILE_NOT_FOUND
         )
-
-    # Check for MultiMonitorTool
-    if not os.path.exists(MMT_PATH_VALUE):
-        notification.send_error(MMT_PATH_VALUE + ui_strings.FILE_NOT_FOUND)
+        sys.exit(1)
 
     # Check for temp folder
     if not os.path.exists(paths.TEMP_DIR_PATH):
         os.makedirs(paths.TEMP_DIR_PATH)
-
-    # Check for MultiMonitorTool CSV
-    if not os.path.exists(paths.MMT_CSV_PATH):
-        multimonitortool.save_mmt_config()
 
 
 def read_config():
@@ -75,17 +66,17 @@ def read_config():
     )
     FIRST_START_VALUE = _configparser.getboolean(SETTINGS_SECTION, FIRT_START_KEY)
 
+    check_for_missing_files()
+
     if START_WITH_WINDOWS_VALUE:
         registry.add_to_autostart()
     else:
         registry.remove_from_autostart()
 
     if FIRST_START_VALUE:
-        setup_gui.init_mmt_selection_frame()
+        ui.init_mmt_selection_frame()
         FIRST_START_VALUE = False
         set_config_value(SETTINGS_SECTION, FIRT_START_KEY, FIRST_START_VALUE)
-
-    check_for_missing_files()
 
 
 def _create_default_config_file():

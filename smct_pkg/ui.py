@@ -1,13 +1,10 @@
 import sys
+import os
+import shutil
 import tkinter
 import customtkinter
 from customtkinter import filedialog
-
-
-from smct_pkg import ui_strings, config, multimonitortool
-
-# https://github.com/TomSchimansky/CustomTkinter/tree/master/examples
-# https://github.com/TomSchimansky/CustomTkinter
+from smct_pkg import ui_strings, config, multimonitortool, paths
 
 customtkinter.set_ctk_parent_class(tkinter.Tk)
 
@@ -18,14 +15,19 @@ customtkinter.set_default_color_theme(
 
 _root_window = customtkinter.CTk()
 
-_root_window.title(ui_strings.APP_NAME)
+_root_window.title(ui_strings.SHORT_NAME)
 _root_window.resizable(False, False)
+
+_root_window.geometry()
 
 _select_mmt_exe_frame = customtkinter.CTkFrame(master=_root_window)
 _select_monitor_frame = customtkinter.CTkFrame(master=_root_window)
 
 
 def exit_application():
+    # clean up files if setup was interrupted
+    shutil.rmtree(paths.TEMP_DIR_PATH)
+    os.remove(paths.CONFIG_PATH)
     _root_window.destroy()
     sys.exit(1)
 
@@ -34,7 +36,8 @@ _root_window.protocol("WM_DELETE_WINDOW", exit_application)
 
 
 def init_mmt_selection_frame():
-    _root_window.geometry("300x110")
+    _root_window.iconbitmap(paths.ASSETS_ICO_PATH)
+    # _root_window.geometry("300x110")
     _select_mmt_exe_frame.pack(pady=10, padx=10, fill="both", expand=True)
 
     select_mmt_label = customtkinter.CTkLabel(
@@ -59,9 +62,6 @@ def _browse_button_callback():
         title=ui_strings.SELECT_MMT_LABEL,
         filetypes=[("MultiMonitorTool", "multimonitortool.exe")],
     )
-    # TODO: if using auto-py-to-exe this returns the wrong path? -> crashes
-    # C:/App_Install/multimonitortool-x64/MultiMonitorTool.exe should the output be
-    # but its C:\\App_Install\\ etc. fix this.
     if not _exe_path:
         print(ui_strings.NO_FILE_SELECTED)
     else:
@@ -76,7 +76,7 @@ def _browse_button_callback():
 
 
 def _init_monitor_selection_frame():
-    _root_window.geometry("300x160")
+    # _root_window.geometry("300x160")
     _select_monitor_frame.pack(pady=10, padx=10, fill="both", expand=True)
 
     _monitor_selection_label = customtkinter.CTkLabel(

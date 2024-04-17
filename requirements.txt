@@ -2,4 +2,4 @@ win10toast
 pystray
 pandas
 customtkinter
-python-tkdnd
+CTkMessagebox
