@@ -37,7 +37,8 @@ Monitor turned off: <br>
 
 3. Select the monitor that you want to toggle by clicking the tray icon.<br>
 
-   ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/9561bd49-7f1a-4bb1-bafc-4ced81ab40d5)
+   ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/abcd93ae-6381-4237-8817-854b04a210ef)
+
 
 5. Left-Click to toggle the state of your monitor or right-click for additional options.
    
