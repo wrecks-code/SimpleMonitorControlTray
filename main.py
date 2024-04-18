@@ -1,4 +1,4 @@
-from smct_pkg import config, tray
+from smct import config, tray
 
 
 def main():

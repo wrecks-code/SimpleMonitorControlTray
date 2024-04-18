@@ -2,7 +2,7 @@ import configparser
 import os
 import sys
 
-from smct_pkg import (
+from smct import (
     notification,
     paths,
     registry,

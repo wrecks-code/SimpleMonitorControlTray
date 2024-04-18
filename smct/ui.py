@@ -4,7 +4,7 @@ import shutil
 import tkinter
 import customtkinter
 from customtkinter import filedialog
-from smct_pkg import ui_strings, config, multimonitortool, paths
+from smct import ui_strings, config, multimonitortool, paths
 
 customtkinter.set_ctk_parent_class(tkinter.Tk)
 

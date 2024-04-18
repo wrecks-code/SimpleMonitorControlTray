@@ -1,7 +1,7 @@
 import os
 import sys
 
-from smct_pkg import ui_strings
+from smct import ui_strings
 
 
 def get_base_path():

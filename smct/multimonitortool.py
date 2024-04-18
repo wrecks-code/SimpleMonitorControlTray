@@ -1,7 +1,7 @@
 import subprocess
 
 import pandas as pd
-from smct_pkg import config, paths
+from smct import config, paths
 
 
 def _get_monitor_df():

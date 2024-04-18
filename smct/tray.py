@@ -4,7 +4,7 @@ import pystray
 from PIL import Image
 from pystray import MenuItem as item
 
-from smct_pkg import config, multimonitortool, paths, registry, ui_strings
+from smct import config, multimonitortool, paths, registry, ui_strings
 
 ICON = None
 

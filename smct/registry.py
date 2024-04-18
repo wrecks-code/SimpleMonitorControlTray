@@ -1,6 +1,6 @@
 import winreg
 
-from smct_pkg import paths, ui_strings
+from smct import paths, ui_strings
 
 KEY_NAME = ui_strings.APP_NAME
 REGISTRY_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
