@@ -15,6 +15,7 @@ Monitor turned off: <br>
 
 - Toggle the state of a specified monitor/TV with a single click on the tray icon
 - Save monitor layout to maintain orientation and positioning when enabling a monitor
+- Option to start with windows
 
 
 ## Requirements
