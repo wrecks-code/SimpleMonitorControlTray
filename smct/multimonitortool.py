@@ -46,10 +46,15 @@ def enable_monitor():
 
 
 def disable_monitor():
-    _run_mmt_command("/disable", get_monitor_id())
+    _run_mmt_command("/disable", get_selected_monitor_id())
 
 
-def get_monitor_id():
+def enable_all_disabled_monitors():
+    for _monitor_id in _get_all_disabled_monitor_ids():
+        _run_mmt_command("/enable", _monitor_id)
+
+
+def get_selected_monitor_id():
     for monitor in _get_monitor_df():
         if (
             monitor["Monitor Name"] == config.MONITOR_NAME_VALUE
@@ -59,7 +64,16 @@ def get_monitor_id():
             return _id[-1]
 
 
-def is_monitor_enabled():
+def _get_all_disabled_monitor_ids():
+    _monitor_id_list = []
+    for monitor in _get_monitor_df():
+        if monitor["Active"].upper() == "NO":
+            _id = monitor["Name"]
+            _monitor_id_list.append(_id[-1])
+    return _monitor_id_list
+
+
+def is_selected_monitor_enabled():
     for monitor in _get_monitor_df():
         if (
             monitor["Monitor Name"] == config.MONITOR_NAME_VALUE

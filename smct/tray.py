@@ -17,7 +17,7 @@ def save_mmt_config_clicked():
 
 
 def icon_tray_clicked():
-    if multimonitortool.is_monitor_enabled():
+    if multimonitortool.is_selected_monitor_enabled():
         multimonitortool.disable_monitor()
         ICON.icon = ICON_DISABLED_IMAGE
     else:
@@ -88,7 +88,7 @@ def init_tray():
 
     first_image_icon = None
 
-    if multimonitortool.is_monitor_enabled():
+    if multimonitortool.is_selected_monitor_enabled():
         first_image_icon = ICON_ENABLED_IMAGE
         multimonitortool.save_mmt_config()
     else:
