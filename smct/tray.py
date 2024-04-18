@@ -9,8 +9,6 @@ from smct.logger import log
 
 ICON = None
 
-menu = None
-
 
 def save_mmt_config_clicked():
     multimonitortool.save_mmt_config()
@@ -34,7 +32,7 @@ def open_folder_clicked():
     os.startfile(paths.BASE_PATH)
 
 
-def startup_with_windows_clicked(icon):
+def startup_with_windows_clicked():
     _current_start_with_windows_value = config.get_start_with_windows_value()
     config.set_start_with_windows_value(not _current_start_with_windows_value)
     _toggled_start_with_windows_value = config.get_start_with_windows_value()
@@ -43,23 +41,6 @@ def startup_with_windows_clicked(icon):
         registry.add_to_autostart()
     else:
         registry.remove_from_autostart()
-    # TODO: This freezes the app i think
-    new_menu = (
-        item(
-            ui_strings.STARTUP_WITH_WINDOWS,
-            startup_with_windows_clicked,
-            checked=lambda icon: registry.is_autostartkey_in_registry(),
-        ),
-        pystray.Menu.SEPARATOR,
-        item(
-            ui_strings.SAVE_MONITOR_LAYOUT,
-            save_mmt_config_clicked,
-        ),
-        item(ui_strings.OPEN_FOLDER, open_folder_clicked),
-        pystray.Menu.SEPARATOR,
-        item(ui_strings.EXIT, exit_clicked),
-    )
-    icon.menu = new_menu
 
 
 def get_icon_image(_option):
