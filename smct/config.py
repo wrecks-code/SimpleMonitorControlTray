@@ -63,7 +63,7 @@ def init_config():
     else:
         registry.remove_from_autostart()
 
-    if get_first_start_with_windows_value():
+    if get_first_start_value():
         ui.init_mmt_selection_frame()
         set_first_start_value(False)
 
@@ -109,7 +109,7 @@ def set_start_with_windows_value(_value):
     _write_to_config()
 
 
-def get_first_start_with_windows_value():
+def get_first_start_value():
     _read_from_config()
     return _configparser.getboolean(_SETTINGS_SECTION, _FIRST_START_KEY)
 
