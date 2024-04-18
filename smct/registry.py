@@ -1,5 +1,6 @@
 import winreg
 from smct import paths, ui_strings
+from smct.logger import log
 
 KEY_NAME = ui_strings.APP_NAME
 REGISTRY_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
@@ -23,9 +24,9 @@ def add_to_autostart():
         exe_path = paths.EXE_PATH[0].upper() + paths.EXE_PATH[1:]
         winreg.SetValueEx(key, KEY_NAME, 0, winreg.REG_SZ, exe_path)
         winreg.CloseKey(key)
-    except PermissionError:
-        # print(f"Error occurred while adding to autostart: {e}")
-        pass
+        log(f"Enabled autostart, wrote {KEY_NAME} to {REGISTRY_KEY}")
+    except PermissionError as e:
+        log(f"Failed to enable autostart: {e} in {REGISTRY_KEY}")
 
 
 def remove_from_autostart():
@@ -35,6 +36,6 @@ def remove_from_autostart():
         )
         winreg.DeleteValue(key, KEY_NAME)
         winreg.CloseKey(key)
-    except (FileNotFoundError, PermissionError):
-        # print(f"Error occurred while removing from autostart: {e}")
-        pass
+        log(f"Disabled autostart, removed {KEY_NAME} from {REGISTRY_KEY}")
+    except (FileNotFoundError, PermissionError) as e:
+        log(f"Failed to disable autostart: {e} in {REGISTRY_KEY}")

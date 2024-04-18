@@ -1,6 +1,7 @@
 import subprocess
 import pandas as pd
 from smct import config, paths
+from smct.logger import log
 
 MMT_CSV_MONITOR_NAME = "Monitor Name"
 MMT_CSV_SERIAL_NUMBER = "Monitor Serial Number"
@@ -21,6 +22,7 @@ def get_monitor_selection_list():
         _monitor_selection_list.append(
             f"{_monitor_id} | {_monitor_name} | {_monitor_serial}"
         )
+        log(f"Monitor detected: {_monitor_id} | {_monitor_name} | {_monitor_serial}")
         _monitor_selection_list.sort()
     return _monitor_selection_list
 
@@ -41,8 +43,9 @@ def _run_mmt_command(command, destination):
             ],
             check=True,
         )
+        log(f"MultiMonitorTool.exe {command} {destination}")
     except subprocess.CalledProcessError as error:
-        print(f"{config.get_mmt_path_value} {command} {destination} failed: {error}")
+        log(f"MultiMonitorTool.exe {command} {destination} failed: {error}")
 
 
 def save_mmt_config():

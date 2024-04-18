@@ -25,6 +25,7 @@ BASE_PATH = get_base_path()
 EXE_PATH = BASE_PATH + "\\" + ui_strings.APP_NAME + ".exe"
 
 CONFIG_PATH = BASE_PATH + "\\config.ini"
+LOG_PATH = BASE_PATH + "\\smct.log"
 ASSETS_DIR_PATH = BASE_PATH + "\\assets"
 MMT_DIR_PATH = BASE_PATH + "\\mmt"
 

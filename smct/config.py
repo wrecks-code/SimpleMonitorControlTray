@@ -4,9 +4,10 @@ import os
 import requests
 
 from smct import paths, registry, ui
+from smct.logger import log
 
 # config.ini structure
-_ENCODING = "utf-8"
+ENCODING = "utf-8"
 
 _SETTINGS_SECTION = "Settings"
 
@@ -22,22 +23,26 @@ _configparser = configparser.ConfigParser()
 def _check_for_missing_files():
     if not os.path.exists(paths.ASSETS_DIR_PATH):
         os.mkdir(paths.ASSETS_DIR_PATH)
+        log(f"Creating assets directory: {paths.ASSETS_DIR_PATH}")
 
     # Check for Icons
-    # ! maybe send error message here?
     if not os.path.exists(paths.ASSETS_ICO_PATH):
+        log(f"{paths.ASSETS_ICO_PATH} not found! Downloading...")
         download_assets_file(os.path.basename(paths.ASSETS_ICO_PATH))
         # sys.exit(1)
     if not os.path.exists(paths.ASSETS_ICON_ENABLED_PATH):
+        log(f"{paths.ASSETS_ICON_ENABLED_PATH} not found! Downloading...")
         download_assets_file(os.path.basename(paths.ASSETS_ICON_ENABLED_PATH))
         # sys.exit(1)
     if not os.path.exists(paths.ASSETS_ICON_DISABLED_PATH):
+        log(f"{paths.ASSETS_ICON_DISABLED_PATH} not found! Downloading...")
         download_assets_file(os.path.basename(paths.ASSETS_ICON_DISABLED_PATH))
         # sys.exit(1)
 
     # Check for temp folder
     if not os.path.exists(paths.MMT_DIR_PATH):
         os.makedirs(paths.MMT_DIR_PATH)
+        log(f"Creating {paths.MMT_DIR_PATH}")
 
 
 def download_assets_file(image_name):
@@ -50,10 +55,13 @@ def download_assets_file(image_name):
         with open(os.path.join(paths.ASSETS_DIR_PATH, filename), "wb") as f:
             for chunk in response.iter_content(1024):
                 f.write(chunk)
+    else:
+        log(f"Error occurred while downloading {image_name}: {response.status_code}")
 
 
 def init_config():
     if not os.path.exists(paths.CONFIG_PATH):
+        log("config.ini not found, creating default config")
         _create_default_config_file()
 
     _check_for_missing_files()
@@ -74,6 +82,7 @@ def get_mmt_path_value():
 
 
 def set_mmt_path_value(_value):
+    log(f"Config.ini - Setting mmt_path to {_value}")
     _configparser[_SETTINGS_SECTION][_MMT_PATH_KEY] = _value
     _write_to_config()
 
@@ -84,6 +93,7 @@ def get_monitor_name_value():
 
 
 def set_monitor_name_value(_value):
+    log(f"Config.ini - Setting monitor_name to {_value}")
     _configparser[_SETTINGS_SECTION][_MONITOR_NAME_KEY] = _value
     _write_to_config()
 
@@ -94,6 +104,7 @@ def get_monitor_serial_value():
 
 
 def set_monitor_serial_value(_value):
+    log(f"Config.ini - Setting monitor_serial to {_value}")
     _configparser[_SETTINGS_SECTION][_MONITOR_SERIAL_KEY] = _value
     _write_to_config()
 
@@ -105,6 +116,7 @@ def get_start_with_windows_value():
 
 def set_start_with_windows_value(_value):
     value_str = "yes" if _value else "no"
+    log(f"Config.ini - Setting start_with_windows to {value_str}")
     _configparser[_SETTINGS_SECTION][_START_WITH_WINDOWS_KEY] = value_str
     _write_to_config()
 
@@ -116,16 +128,17 @@ def get_first_start_value():
 
 def set_first_start_value(_value):
     value_str = "yes" if _value else "no"
+    log(f"Config.ini - Setting first_start to {value_str}")
     _configparser[_SETTINGS_SECTION][_FIRST_START_KEY] = value_str
     _write_to_config()
 
 
 def _read_from_config():
-    _configparser.read(paths.CONFIG_PATH, encoding=_ENCODING)
+    _configparser.read(paths.CONFIG_PATH, encoding=ENCODING)
 
 
 def _write_to_config():
-    with open(paths.CONFIG_PATH, "w", encoding=_ENCODING) as configfile:
+    with open(paths.CONFIG_PATH, "w", encoding=ENCODING) as configfile:
         _configparser.write(configfile)
 
 
