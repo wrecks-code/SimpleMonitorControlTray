@@ -5,8 +5,11 @@ from PIL import Image
 from pystray import MenuItem as item
 
 from smct import config, multimonitortool, paths, registry, ui_strings
+from smct.logger import log
 
 ICON = None
+
+menu = None
 
 
 def save_mmt_config_clicked():
@@ -14,6 +17,7 @@ def save_mmt_config_clicked():
 
 
 def icon_tray_clicked():
+    log("icon_tray_clicked")
     if multimonitortool.is_selected_monitor_enabled():
         multimonitortool.disable_monitor()
         ICON.icon = get_icon_image(False)
@@ -39,7 +43,7 @@ def startup_with_windows_clicked(icon):
         registry.add_to_autostart()
     else:
         registry.remove_from_autostart()
-
+    # TODO: This freezes the app i think
     new_menu = (
         item(
             ui_strings.STARTUP_WITH_WINDOWS,
