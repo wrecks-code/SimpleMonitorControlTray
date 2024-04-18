@@ -72,7 +72,7 @@ def init_config():
         registry.remove_from_autostart()
 
     if get_first_start_value():
-        ui.init_mmt_selection_frame()
+        ui.init_root_window()
         set_first_start_value(False)
 
 
