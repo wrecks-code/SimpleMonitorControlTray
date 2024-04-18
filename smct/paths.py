@@ -13,7 +13,7 @@ def get_base_path():
 
 
 def strip_package_name_from_path(path):
-    suffix = "\\smct_pkg"
+    suffix = "\\smct"
     if path.endswith(suffix):
         return path[: -len(suffix)]
     else:
