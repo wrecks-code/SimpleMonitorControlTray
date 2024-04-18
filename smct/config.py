@@ -23,7 +23,7 @@ _configparser = configparser.ConfigParser()
 def _check_for_missing_files():
     if not os.path.exists(paths.ASSETS_DIR_PATH):
         os.mkdir(paths.ASSETS_DIR_PATH)
-        log(f"Creating assets directory: {paths.ASSETS_DIR_PATH}")
+        log(f"Creating {paths.ASSETS_DIR_PATH}")
 
     # Check for Icons
     if not os.path.exists(paths.ASSETS_ICO_PATH):
