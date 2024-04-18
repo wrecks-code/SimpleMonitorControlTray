@@ -30,7 +30,7 @@ Monitor turned off: <br>
 
 ## Usage
 
-1. Double-click `MonitorStateControlTray.exe` to start the program.
+1. Double-click `SimpleMonitorControlTray.exe` to start the program.
 2. Follow the prompts to browse for the path to your `MultiMonitorTool.exe`.<br>
 
    ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/753a59a9-02f0-458d-8e0d-ac7fe3789a51)
