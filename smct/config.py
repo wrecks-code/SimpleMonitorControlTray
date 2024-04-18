@@ -27,15 +27,15 @@ def _check_for_missing_files():
 
     # Check for Icons
     if not os.path.exists(paths.ASSETS_ICO_PATH):
-        log(f"{paths.ASSETS_ICO_PATH} not found! Downloading...")
+        log(f"Downloading icon.ico - {paths.ASSETS_BASE_URL}")
         download_assets_file(os.path.basename(paths.ASSETS_ICO_PATH))
         # sys.exit(1)
     if not os.path.exists(paths.ASSETS_ICON_ENABLED_PATH):
-        log(f"{paths.ASSETS_ICON_ENABLED_PATH} not found! Downloading...")
+        log(f"Downloading iconEnabled.png - {paths.ASSETS_BASE_URL}")
         download_assets_file(os.path.basename(paths.ASSETS_ICON_ENABLED_PATH))
         # sys.exit(1)
     if not os.path.exists(paths.ASSETS_ICON_DISABLED_PATH):
-        log(f"{paths.ASSETS_ICON_DISABLED_PATH} not found! Downloading...")
+        log(f"Downloading iconDisabled.png - {paths.ASSETS_BASE_URL}")
         download_assets_file(os.path.basename(paths.ASSETS_ICON_DISABLED_PATH))
         # sys.exit(1)
 
