@@ -49,6 +49,7 @@ Monitor turned off: <br>
 - If you want to reset the settings simply delete config.ini in your SimpleMonitorControlTray folder
 - The "Startup with Windows" feature adds a registry key to automatically start the program with Windows. You can remove this by clicking it again.
 - A default layout is saved on first startup, which can be overwritten by right-clicking and selecting "Save current monitor layout".
+- Build the exe yourself using pyinstaller/auto-py-to-exe: `pyinstaller --noconfirm --onefile --windowed --icon "C:/SimpleMonitorControlTray/assets/icon.ico"  "C:/SimpleMonitorControlTray/main.py"`
 - If you encounter any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
 
 - I used this project mainly to get a feel for python developing. I learned a lot from this.
