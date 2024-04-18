@@ -8,9 +8,6 @@ from smct import config, multimonitortool, paths, registry, ui_strings
 
 ICON = None
 
-ICON_ENABLED_IMAGE = None
-ICON_DISABLED_IMAGE = None
-
 
 def save_mmt_config_clicked():
     multimonitortool.save_mmt_config()
@@ -19,10 +16,10 @@ def save_mmt_config_clicked():
 def icon_tray_clicked():
     if multimonitortool.is_selected_monitor_enabled():
         multimonitortool.disable_monitor()
-        ICON.icon = ICON_DISABLED_IMAGE
+        ICON.icon = get_icon_image(False)
     else:
         multimonitortool.enable_monitor()
-        ICON.icon = ICON_ENABLED_IMAGE
+        ICON.icon = get_icon_image(True)
 
 
 def exit_clicked():
@@ -34,13 +31,11 @@ def open_folder_clicked():
 
 
 def startup_with_windows_clicked(icon):
-    config.START_WITH_WINDOWS_VALUE = not config.START_WITH_WINDOWS_VALUE
-    config.set_config_value(
-        config.SETTINGS_SECTION,
-        config.START_WITH_WINDOWS_KEY,
-        config.START_WITH_WINDOWS_VALUE,
-    )
-    if config.START_WITH_WINDOWS_VALUE:
+    _current_start_with_windows_value = config.get_start_with_windows_value()
+    config.set_start_with_windows_value(not _current_start_with_windows_value)
+    _toggled_start_with_windows_value = config.get_start_with_windows_value()
+
+    if _toggled_start_with_windows_value:
         registry.add_to_autostart()
     else:
         registry.remove_from_autostart()
@@ -63,12 +58,13 @@ def startup_with_windows_clicked(icon):
     icon.menu = new_menu
 
 
-def init_tray():
-    # pylint: disable=global-statement
-    global ICON_ENABLED_IMAGE, ICON_DISABLED_IMAGE
-    ICON_ENABLED_IMAGE = Image.open(paths.ASSETS_ICON_ENABLED_PATH)
-    ICON_DISABLED_IMAGE = Image.open(paths.ASSETS_ICON_DISABLED_PATH)
+def get_icon_image(_option):
+    if _option:
+        return Image.open(paths.ASSETS_ICON_ENABLED_PATH)
+    return Image.open(paths.ASSETS_ICON_DISABLED_PATH)
 
+
+def init_tray():
     menu = (
         item(ui_strings.APP_NAME, icon_tray_clicked, default=True, visible=False),
         item(
@@ -89,10 +85,10 @@ def init_tray():
     first_image_icon = None
 
     if multimonitortool.is_selected_monitor_enabled():
-        first_image_icon = ICON_ENABLED_IMAGE
+        first_image_icon = get_icon_image(True)
         multimonitortool.save_mmt_config()
     else:
-        first_image_icon = ICON_DISABLED_IMAGE
+        first_image_icon = get_icon_image(False)
 
     # pylint: disable=global-statement
     global ICON

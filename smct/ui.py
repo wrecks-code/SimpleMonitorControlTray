@@ -26,7 +26,7 @@ _select_monitor_frame = customtkinter.CTkFrame(master=_root_window)
 
 def exit_application():
     # clean up files if setup was interrupted
-    shutil.rmtree(paths.TEMP_DIR_PATH)
+    shutil.rmtree(paths.MMT_DIR_PATH)
     os.remove(paths.CONFIG_PATH)
     _root_window.destroy()
     sys.exit(1)
@@ -65,13 +65,10 @@ def _browse_button_callback():
     if not _exe_path:
         print(ui_strings.NO_FILE_SELECTED)
     else:
-        config.MMT_PATH_VALUE = _exe_path
-        config.set_config_value(
-            config.SETTINGS_SECTION,
-            config.MMT_PATH_KEY,
-            config.MMT_PATH_VALUE,
-        )
+        config.set_mmt_path_value(_exe_path)
         _select_mmt_exe_frame.destroy()
+        multimonitortool.enable_all_disabled_monitors()
+        multimonitortool.save_mmt_config()
         _init_monitor_selection_frame()
 
 
@@ -94,20 +91,9 @@ def _init_monitor_selection_frame():
 
     def _select_monitor_button_callback():
         _menu_string = monitor_selection_menu.get().split("|")
+        config.set_monitor_name_value(_menu_string[1].strip())
+        config.set_monitor_serial_value(_menu_string[2].strip())
 
-        config.MONITOR_NAME_VALUE = _menu_string[0].strip()
-        config.set_config_value(
-            config.SETTINGS_SECTION,
-            config.MONITOR_NAME_KEY,
-            config.MONITOR_NAME_VALUE,
-        )
-
-        config.MONITOR_SERIAL_VALUE = _menu_string[1].strip()
-        config.set_config_value(
-            config.SETTINGS_SECTION,
-            config.MONITOR_SERIAL_KEY,
-            config.MONITOR_SERIAL_VALUE,
-        )
         _root_window.destroy()
 
     _select_monitor_button = customtkinter.CTkButton(

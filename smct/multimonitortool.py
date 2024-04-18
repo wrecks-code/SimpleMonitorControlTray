@@ -1,40 +1,48 @@
 import subprocess
-
 import pandas as pd
 from smct import config, paths
 
-
-def _get_monitor_df():
-    _run_mmt_command("/scomma", paths.MMT_CSV_PATH)
-    _monitor_df = []
-
-    data = pd.read_csv(paths.MMT_CSV_PATH)
-    for index in range(len(data)):
-        _monitor_df.append(data.iloc[index])
-    return _monitor_df
+MMT_CSV_MONITOR_NAME = "Monitor Name"
+MMT_CSV_SERIAL_NUMBER = "Monitor Serial Number"
+MMT_CSV_NAME = "Name"
+MMT_CSV_ACTIVE = "Active"
+MMT_CSV_YES = "yes"
+MMT_CSV_NO = "no"
 
 
 def get_monitor_selection_list():
     _monitor_selection_list = []
-    for _monitor in _get_monitor_df():
-        _monitor_name = _monitor["Monitor Name"]
-        _monitor_serial = _monitor["Monitor Serial Number"]
-        _monitor_selection_list.append(f"{_monitor_name} | {_monitor_serial}")
+    monitor_df = _get_monitor_df()
+    # pylint: disable=unused-variable
+    for index, row in monitor_df.iterrows():
+        _monitor_id = row[MMT_CSV_NAME][-1]
+        _monitor_name = row[MMT_CSV_MONITOR_NAME]
+        _monitor_serial = row[MMT_CSV_SERIAL_NUMBER]
+        _monitor_selection_list.append(
+            f"{_monitor_id} | {_monitor_name} | {_monitor_serial}"
+        )
+        _monitor_selection_list.sort()
     return _monitor_selection_list
+
+
+def _get_monitor_df():
+    _run_mmt_command("/scomma", paths.MMT_CSV_PATH)
+    data = pd.read_csv(paths.MMT_CSV_PATH)
+    return data
 
 
 def _run_mmt_command(command, destination):
     try:
         subprocess.run(
             [
-                config.MMT_PATH_VALUE,
+                config.get_mmt_path_value(),
                 command,
                 destination,
             ],
             check=True,
         )
     except subprocess.CalledProcessError as error:
-        print(f"{config.MMT_PATH_VALUE} {command} {destination} failed: {error}")
+        print(f"{config.get_mmt_path_value} {command} {destination} failed: {error}")
 
 
 def save_mmt_config():
@@ -46,39 +54,44 @@ def enable_monitor():
 
 
 def disable_monitor():
-    _run_mmt_command("/disable", get_selected_monitor_id())
+    selected_monitor_id = get_selected_monitor_id()
+    if selected_monitor_id:
+        _run_mmt_command("/disable", selected_monitor_id)
 
 
 def enable_all_disabled_monitors():
-    for _monitor_id in _get_all_disabled_monitor_ids():
+    disabled_monitor_ids = _get_all_disabled_monitor_ids()
+    for _monitor_id in disabled_monitor_ids:
         _run_mmt_command("/enable", _monitor_id)
 
 
 def get_selected_monitor_id():
-    for monitor in _get_monitor_df():
+    # pylint: disable=unused-variable
+    for index, monitor in _get_monitor_df().iterrows():
         if (
-            monitor["Monitor Name"] == config.MONITOR_NAME_VALUE
-            and str(monitor["Monitor Serial Number"]) == config.MONITOR_SERIAL_VALUE
+            monitor[MMT_CSV_MONITOR_NAME] == config.get_monitor_name_value()
+            and str(monitor[MMT_CSV_SERIAL_NUMBER]) == config.get_monitor_serial_value()
         ):
-            _id = monitor["Name"]
-            return _id[-1]
+            return monitor[MMT_CSV_NAME][-1]
 
 
 def _get_all_disabled_monitor_ids():
-    _monitor_id_list = []
-    for monitor in _get_monitor_df():
-        if monitor["Active"].upper() == "NO":
-            _id = monitor["Name"]
-            _monitor_id_list.append(_id[-1])
-    return _monitor_id_list
+    monitor_df = _get_monitor_df()
+    disabled_monitor_ids = []
+    # pylint: disable=unused-variable
+    for index, monitor in monitor_df.iterrows():
+        if monitor[MMT_CSV_ACTIVE].lower() == MMT_CSV_NO:
+            disabled_monitor_ids.append(monitor[MMT_CSV_NAME][-1])
+    return disabled_monitor_ids
 
 
 def is_selected_monitor_enabled():
-    for monitor in _get_monitor_df():
+    # pylint: disable=unused-variable
+    for index, monitor in _get_monitor_df().iterrows():
         if (
-            monitor["Monitor Name"] == config.MONITOR_NAME_VALUE
-            and str(monitor["Monitor Serial Number"]) == config.MONITOR_SERIAL_VALUE
-            and monitor["Active"].upper() == "YES"
+            monitor[MMT_CSV_MONITOR_NAME] == config.get_monitor_name_value()
+            and str(monitor[MMT_CSV_SERIAL_NUMBER]) == config.get_monitor_serial_value()
+            and monitor[MMT_CSV_ACTIVE].lower() == MMT_CSV_YES
         ):
             return True
     return False

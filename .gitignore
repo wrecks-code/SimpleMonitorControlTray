@@ -153,5 +153,5 @@ cython_debug/
 
 output/
 .vscode/
-temp/
+mmt/
 config.ini

@@ -2,7 +2,7 @@ from smct import config, tray
 
 
 def main():
-    config.read_config()
+    config.init_config()
     tray.init_tray()
 
 
