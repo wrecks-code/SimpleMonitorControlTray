@@ -39,7 +39,7 @@ Monitor turned off: <br>
 
    ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/9561bd49-7f1a-4bb1-bafc-4ced81ab40d5)
 
-5. Right-click on the tray icon for additional options.
+5. Left-Click to toggle the state of your monitor or right-click for additional options.
    
    ![image](https://github.com/wrecks-code/SimpleMonitorControlTray/assets/29825723/40826a9e-c197-4c9d-9b5e-62dd208503c9)
 
