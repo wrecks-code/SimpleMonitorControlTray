@@ -43,6 +43,7 @@ def exit_application():
     shutil.rmtree(paths.MMT_DIR_PATH)
     shutil.rmtree(paths.ASSETS_DIR_PATH)
     os.remove(paths.CONFIG_PATH)
+    os.remove(paths.LOG_PATH)
     _ROOT_WINDOW.destroy()
     sys.exit(1)
 
