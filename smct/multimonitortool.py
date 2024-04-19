@@ -19,10 +19,9 @@ def get_monitor_selection_list():
         _monitor_id = row[MMT_CSV_NAME][-1]
         _monitor_name = row[MMT_CSV_MONITOR_NAME]
         _monitor_serial = row[MMT_CSV_SERIAL_NUMBER]
-        _monitor_selection_list.append(
-            f"{_monitor_id} | {_monitor_name} | {_monitor_serial}"
-        )
-        log(f"Monitor detected: {_monitor_id} | {_monitor_name} | {_monitor_serial}")
+        _display_string = f"{_monitor_id} | {_monitor_name} | {_monitor_serial}"
+        _monitor_selection_list.append(_display_string)
+        log(f"Monitor detected: {_display_string}")
         _monitor_selection_list.sort()
     return _monitor_selection_list
 
@@ -43,27 +42,35 @@ def _run_mmt_command(command, destination):
             ],
             check=True,
         )
-        log(f"MultiMonitorTool.exe {command} {destination}")
     except subprocess.CalledProcessError as error:
         log(f"MultiMonitorTool.exe {command} {destination} failed: {error}")
 
 
 def save_mmt_config():
+    _command = "/SaveConfig"
+    log(f"MultiMonitorTool.exe {_command} {paths.MMT_CONFIG_PATH}")
     _run_mmt_command("/SaveConfig", paths.MMT_CONFIG_PATH)
 
 
 def enable_monitor():
-    _run_mmt_command("/LoadConfig", paths.MMT_CONFIG_PATH)
+    _command = "/LoadConfig"
+    log(f"MultiMonitorTool.exe {_command} {paths.MMT_CONFIG_PATH}")
+    _run_mmt_command(_command, paths.MMT_CONFIG_PATH)
 
 
 def disable_monitor():
+    _command = "/disable"
     selected_monitor_id = get_selected_monitor_id()
     if selected_monitor_id:
-        _run_mmt_command("/disable", selected_monitor_id)
+        _run_mmt_command(_command, selected_monitor_id)
+        log(f"MultiMonitorTool.exe {_command} {selected_monitor_id}")
+    else:
+        log("disable_monitor() - Can't find selected monitor id")
 
 
 def enable_all_disabled_monitors():
     disabled_monitor_ids = _get_all_disabled_monitor_ids()
+    log("enable_all_disabled_monitors()")
     for _monitor_id in disabled_monitor_ids:
         _run_mmt_command("/enable", _monitor_id)
 
