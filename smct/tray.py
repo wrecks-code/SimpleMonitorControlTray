@@ -35,9 +35,8 @@ def open_folder_clicked():
 def startup_with_windows_clicked():
     _current_start_with_windows_value = config.get_start_with_windows_value()
     config.set_start_with_windows_value(not _current_start_with_windows_value)
-    _toggled_start_with_windows_value = config.get_start_with_windows_value()
 
-    if _toggled_start_with_windows_value:
+    if config.get_start_with_windows_value():
         registry.add_to_autostart()
     else:
         registry.remove_from_autostart()

@@ -70,18 +70,17 @@ def _init_mmt_selection_frame():
 
 
 def _browse_button_callback():
-    _exe_path = filedialog.askopenfilename(
+    if _exe_path := filedialog.askopenfilename(
         title=ui_strings.SELECT_MMT_LABEL,
         filetypes=[("MultiMonitorTool", "multimonitortool.exe")],
-    )
-    if not _exe_path:
-        print(ui_strings.NO_FILE_SELECTED)
-    else:
+    ):
         config.set_mmt_path_value(_exe_path)
         _SELECT_MMT_EXE_FRAME.destroy()
         multimonitortool.enable_all_disabled_monitors()
         multimonitortool.save_mmt_config()
         _init_monitor_selection_frame()
+    else:
+        print(ui_strings.NO_FILE_SELECTED)
 
 
 def _init_monitor_selection_frame():
