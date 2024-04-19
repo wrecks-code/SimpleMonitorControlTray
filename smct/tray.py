@@ -15,7 +15,7 @@ def save_mmt_config_clicked():
 
 
 def icon_tray_clicked():
-    log("icon_tray_clicked")
+    log("icon_tray_clicked()")
     if multimonitortool.is_selected_monitor_enabled():
         multimonitortool.disable_monitor()
         ICON.icon = get_icon_image(False)
