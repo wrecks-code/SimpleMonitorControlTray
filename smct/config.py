@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from smct import paths, registry, ui
+from smct import paths, ui
 from smct.logger import log
 
 # config.ini structure
@@ -21,6 +21,10 @@ _configparser = configparser.ConfigParser()
 
 
 def _check_for_missing_files():
+    if not os.path.exists(paths.CONFIG_PATH):
+        log("creating default config")
+        _create_default_config_file()
+
     if not os.path.exists(paths.ASSETS_DIR_PATH):
         os.mkdir(paths.ASSETS_DIR_PATH)
         log(f"Creating {paths.ASSETS_DIR_PATH}")
@@ -60,16 +64,7 @@ def download_assets_file(image_name):
 
 
 def init_config():
-    if not os.path.exists(paths.CONFIG_PATH):
-        log("config.ini not found, creating default config")
-        _create_default_config_file()
-
     _check_for_missing_files()
-
-    if get_start_with_windows_value():
-        registry.add_to_autostart()
-    else:
-        registry.remove_from_autostart()
 
     if get_first_start_value():
         ui.init_root_window()

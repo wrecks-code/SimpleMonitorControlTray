@@ -1,8 +1,7 @@
 import logging
 import os
-from smct import paths
+from smct.paths import LOG_PATH
 
-LOGFILENAME = paths.LOG_PATH
 ENCODING = "utf-8"
 
 LOG = None
@@ -16,18 +15,18 @@ def log(text):
 
 
 def clear_log_if_needed():
-    if os.path.exists(LOGFILENAME):
-        with open(LOGFILENAME, "r", encoding=ENCODING) as file:
+    if os.path.exists(LOG_PATH):
+        with open(LOG_PATH, "r", encoding=ENCODING) as file:
             lines = file.readlines()
             if len(lines) > LOG_LINE_LIMIT:
-                with open(LOGFILENAME, "w", encoding=ENCODING) as file:
+                with open(LOG_PATH, "w", encoding=ENCODING) as file:
                     file.write("")
 
 
 if STARTUP:
     clear_log_if_needed()
     logging.basicConfig(
-        filename=LOGFILENAME,
+        filename=LOG_PATH,
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
