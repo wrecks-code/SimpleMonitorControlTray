@@ -13,24 +13,38 @@ def get_base_path():
 
 
 def strip_package_name_from_path(path):
-    suffix = "\\smct"
+    suffix = "smct"  # Removed the backslash for platform independence
     return path[: -len(suffix)] if path.endswith(suffix) else path
 
 
+# NAMES
+EXE_FILE_NAME = f"{ui_strings.APP_NAME}.exe"
+CONFIG_FILE_NAME = "config.ini"
+LOG_FILE_NAME = "smct.log"
+ASSETS_DIR_NAME = "assets"
+MMT_DIR_NAME = "mmt"
+
+MMT_CSV_NAME = "MultiMonitorToolOutput.csv"
+MMT_CONFIG_NAME = "MultiMonitorToolConfig"
+
+ASSETS_ICON_ENABLED_NAME = "tray_monitor_enabled.png"
+ASSETS_ICON_DISABLED_NAME = "tray_monitor_disabled.png"
+ASSETS_ICO_NAME = "icon.ico"
+
 # PATHS
-BASE_PATH = get_base_path()
-EXE_PATH = BASE_PATH + "\\" + ui_strings.APP_NAME + ".exe"
-
-CONFIG_PATH = BASE_PATH + "\\config.ini"
-LOG_PATH = BASE_PATH + "\\smct.log"
-ASSETS_DIR_PATH = BASE_PATH + "\\assets"
-MMT_DIR_PATH = BASE_PATH + "\\mmt"
-
-MMT_CSV_PATH = MMT_DIR_PATH + "\\MultiMonitorToolOutput.csv"
-MMT_CONFIG_PATH = MMT_DIR_PATH + "\\MultiMonitorToolConfig"
-
-ASSETS_ICON_ENABLED_PATH = ASSETS_DIR_PATH + "\\iconEnabled.png"
-ASSETS_ICON_DISABLED_PATH = ASSETS_DIR_PATH + "\\iconDisabled.png"
-ASSETS_ICO_PATH = ASSETS_DIR_PATH + "\\icon.ico"
-
 ASSETS_BASE_URL = "https://raw.githubusercontent.com/wrecks-code/SimpleMonitorControlTray/main/assets/"
+
+BASE_PATH = get_base_path()
+EXE_PATH = os.path.join(BASE_PATH, EXE_FILE_NAME)
+
+CONFIG_PATH = os.path.join(BASE_PATH, CONFIG_FILE_NAME)
+LOG_PATH = os.path.join(BASE_PATH, LOG_FILE_NAME)
+ASSETS_DIR_PATH = os.path.join(BASE_PATH, ASSETS_DIR_NAME)
+MMT_DIR_PATH = os.path.join(BASE_PATH, MMT_DIR_NAME)
+
+MMT_CSV_PATH = os.path.join(MMT_DIR_PATH, MMT_CSV_NAME)
+MMT_CONFIG_PATH = os.path.join(MMT_DIR_PATH, MMT_CONFIG_NAME)
+
+ASSETS_ICON_ENABLED_PATH = os.path.join(ASSETS_DIR_PATH, ASSETS_ICON_ENABLED_NAME)
+ASSETS_ICON_DISABLED_PATH = os.path.join(ASSETS_DIR_PATH, ASSETS_ICON_DISABLED_NAME)
+ASSETS_ICO_PATH = os.path.join(ASSETS_DIR_PATH, ASSETS_ICO_NAME)

@@ -22,31 +22,31 @@ _configparser = configparser.ConfigParser()
 
 def _check_for_missing_files():
     if not os.path.exists(paths.CONFIG_PATH):
-        log("creating default config")
         _create_default_config_file()
+        log(f"Creating {paths.CONFIG_FILE_NAME}")
 
     if not os.path.exists(paths.ASSETS_DIR_PATH):
         os.mkdir(paths.ASSETS_DIR_PATH)
-        log(f"Creating {paths.ASSETS_DIR_PATH}")
+        log(f"Creating {paths.ASSETS_DIR_NAME} folder")
 
     # Check for Icons
     if not os.path.exists(paths.ASSETS_ICO_PATH):
-        log(f"Downloading icon.ico - {paths.ASSETS_BASE_URL}")
-        download_assets_file(os.path.basename(paths.ASSETS_ICO_PATH))
+        log(f"Downloading {paths.ASSETS_BASE_URL}{paths.ASSETS_ICO_NAME}")
+        download_assets_file(paths.ASSETS_ICO_NAME)
         # sys.exit(1)
     if not os.path.exists(paths.ASSETS_ICON_ENABLED_PATH):
-        log(f"Downloading iconEnabled.png - {paths.ASSETS_BASE_URL}")
-        download_assets_file(os.path.basename(paths.ASSETS_ICON_ENABLED_PATH))
+        log(f"Downloading {paths.ASSETS_BASE_URL}{paths.ASSETS_ICON_ENABLED_NAME}")
+        download_assets_file(paths.ASSETS_ICON_ENABLED_NAME)
         # sys.exit(1)
     if not os.path.exists(paths.ASSETS_ICON_DISABLED_PATH):
-        log(f"Downloading iconDisabled.png - {paths.ASSETS_BASE_URL}")
-        download_assets_file(os.path.basename(paths.ASSETS_ICON_DISABLED_PATH))
+        log(f"Downloading {paths.ASSETS_BASE_URL}{paths.ASSETS_ICON_DISABLED_NAME}")
+        download_assets_file(paths.ASSETS_ICON_DISABLED_NAME)
         # sys.exit(1)
 
     # Check for temp folder
     if not os.path.exists(paths.MMT_DIR_PATH):
         os.makedirs(paths.MMT_DIR_PATH)
-        log(f"Creating {paths.MMT_DIR_PATH}")
+        log(f"Creating {paths.MMT_DIR_NAME} folder")
 
 
 def download_assets_file(image_name):
