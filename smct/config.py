@@ -19,13 +19,24 @@ _DEFAULT_CONFIG = {
     KEY_START_WITH_WINDOWS: "no",
     KEY_FIRST_START: "yes",
 }
-_configparser = configparser.ConfigParser()
+_SETTINGS_DICT = {}
+
+
+def _load_settings_into_memory():
+    # pylint: disable=global-statement
+    global _SETTINGS_DICT
+    _config = configparser.ConfigParser()
+    _config.read(paths.CONFIG_PATH)
+    _SETTINGS_DICT = dict(_config.items(_SECTION_SETTINGS))
 
 
 def _check_for_missing_files():
+    def create_assets_dir():
+        os.mkdir(paths.ASSETS_DIR_PATH)
+
     paths_actions = {
         paths.CONFIG_PATH: _create_default_config_file,
-        paths.ASSETS_DIR_PATH: lambda: os.mkdir(paths.ASSETS_DIR_PATH),
+        paths.ASSETS_DIR_PATH: create_assets_dir,
         paths.ASSETS_ICO_PATH: lambda: download_assets_file(paths.ASSETS_ICO_NAME),
         paths.ASSETS_ICON_ENABLED_PATH: lambda: download_assets_file(
             paths.ASSETS_ICON_ENABLED_NAME
@@ -34,6 +45,7 @@ def _check_for_missing_files():
             paths.ASSETS_ICON_DISABLED_NAME
         ),
     }
+
     for path, action in paths_actions.items():
         if not os.path.exists(path):
             action()
@@ -42,51 +54,47 @@ def _check_for_missing_files():
 
 def download_assets_file(image_name):
     image_url = os.path.join(paths.ASSETS_BASE_URL, image_name)
-    response = requests.get(image_url, stream=True, timeout=5)
-    if response.status_code == 200:
+    try:
+        response = requests.get(image_url, stream=True, timeout=5)
+        response.raise_for_status()
         with open(os.path.join(paths.ASSETS_DIR_PATH, image_name), "wb") as f:
             for chunk in response.iter_content(1024):
                 f.write(chunk)
-    else:
-        log(
-            ERROR,
-            f"Error occurred while downloading {image_name}: {response.status_code}",
-        )
+    except requests.exceptions.RequestException as e:
+        log(ERROR, f"Error occurred while downloading {image_name}: {e}")
 
 
 def init_config():
     _check_for_missing_files()
+    _load_settings_into_memory()
     if get_value(KEY_FIRST_START):
         ui.init_root_window()
         set_value(KEY_FIRST_START, False)
 
 
-def get_value(key):
-    _read_from_config()
-    value = _configparser.get(_SECTION_SETTINGS, key)
-    return value.lower() == "yes" if value.lower() in ["yes", "no"] else value
+def get_value(_key):
+
+    if _SETTINGS_DICT[_key] == "yes":
+        return True
+    return False if _SETTINGS_DICT[_key] == "no" else _SETTINGS_DICT[_key]
 
 
-def set_value(key, value):
-    if isinstance(value, bool):
-        value_str = "yes" if value else "no"
-    else:
-        value_str = str(value)
+def set_value(_key, _value):
 
-    log(INFO, f"{paths.CONFIG_FILE_NAME} - Setting {key} to {value_str}")
-    _configparser[_SECTION_SETTINGS][key] = value_str
-    _write_to_config()
+    if isinstance(_value, bool):
+        _value = "yes" if _value is True else "no"
 
-
-def _read_from_config():
-    _configparser.read(paths.CONFIG_PATH, encoding=ENCODING)
-
-
-def _write_to_config():
+    log(INFO, f"{paths.CONFIG_FILE_NAME} - Setting {_key} to {_value}")
+    config = configparser.ConfigParser()
+    config.read(paths.CONFIG_PATH)
+    config.set(_SECTION_SETTINGS, _key, _value)
     with open(paths.CONFIG_PATH, "w", encoding=ENCODING) as configfile:
-        _configparser.write(configfile)
+        config.write(configfile)
+    _load_settings_into_memory()
 
 
 def _create_default_config_file():
-    _configparser[_SECTION_SETTINGS] = _DEFAULT_CONFIG
-    _write_to_config()
+    config = configparser.ConfigParser()
+    config[_SECTION_SETTINGS] = _DEFAULT_CONFIG
+    with open(paths.CONFIG_PATH, "w", encoding=ENCODING) as configfile:
+        config.write(configfile)

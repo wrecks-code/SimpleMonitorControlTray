@@ -38,6 +38,7 @@ def _run_mmt_command(command, destination):
         log(ERROR, f"{paths.MMT_EXE_NAME} {command} failed: {error}")
 
 
+# TODO: try to only change the active value of the monitor and save that with all other values
 def save_mmt_config():
     _run_mmt_command("/SaveConfig", paths.MMT_CONFIG_PATH)
 
