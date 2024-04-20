@@ -1,5 +1,5 @@
 import winreg
-from smct import paths, ui_strings, config
+from smct import paths, ui_strings
 from smct.logger import log, ERROR
 
 KEY_NAME = ui_strings.APP_NAME
@@ -45,11 +45,9 @@ def add_to_autostart():
     with RegistryKey(winreg.KEY_WRITE) as key:
         exe_path = f"{paths.EXE_PATH[0].upper()}{paths.EXE_PATH[1:]}"
         winreg.SetValueEx(key, KEY_NAME, 0, winreg.REG_SZ, exe_path)
-        config.set_value(config.KEY_START_WITH_WINDOWS, True)
 
 
 @handle_registry_errors
 def remove_from_autostart():
     with RegistryKey(winreg.KEY_ALL_ACCESS) as key:
         winreg.DeleteValue(key, KEY_NAME)
-        config.set_value(config.KEY_START_WITH_WINDOWS, False)
