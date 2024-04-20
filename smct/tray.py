@@ -84,6 +84,12 @@ def init_tray():
     if selected_monitor_active and not os.path.exists(paths.MMT_CONFIG_PATH):
         multimonitortool.save_mmt_config()
 
+    # this is just in case the app was moved to another folder while having autostart enabled
+    if config.get_value(config.KEY_START_WITH_WINDOWS):
+        if not registry.is_autostartkey_in_registry():
+            registry.remove_from_autostart()
+        registry.add_to_autostart()
+
     # pylint: disable=global-statement
     global ICON
     ICON = pystray.Icon(
