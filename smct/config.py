@@ -1,130 +1,80 @@
 import configparser
 import os
-
 import requests
-
 from smct import paths, ui
-from smct.logger import log
+from smct.logger import log, INFO, ERROR
 
-# config.ini structure
 ENCODING = "utf-8"
+_SECTION_SETTINGS = "Settings"
+KEY_MONITOR_NAME = "monitor_name"
+KEY_MONITOR_SERIAL = "monitor_serial"
+KEY_MMT_PATH = "multimonitortool_executable"
+KEY_START_WITH_WINDOWS = "start_with_windows"
+KEY_FIRST_START = "first_start"
 
-_SETTINGS_SECTION = "Settings"
-
-_MONITOR_NAME_KEY = "monitor_name"
-_MONITOR_SERIAL_KEY = "monitor_serial"
-_MMT_PATH_KEY = "multimonitortool_executable"
-_START_WITH_WINDOWS_KEY = "start_with_windows"
-_FIRST_START_KEY = "first_start"
-
+_DEFAULT_CONFIG = {
+    KEY_MONITOR_NAME: "Example Monitor",
+    KEY_MONITOR_SERIAL: "12345",
+    KEY_MMT_PATH: "C:/MultiMonitorTool.exe",
+    KEY_START_WITH_WINDOWS: "no",
+    KEY_FIRST_START: "yes",
+}
 _configparser = configparser.ConfigParser()
 
 
 def _check_for_missing_files():
-    if not os.path.exists(paths.CONFIG_PATH):
-        _create_default_config_file()
-        log(f"Creating {paths.CONFIG_FILE_NAME}")
-
-    if not os.path.exists(paths.ASSETS_DIR_PATH):
-        os.mkdir(paths.ASSETS_DIR_PATH)
-        log(f"Creating {paths.ASSETS_DIR_NAME} folder")
-
-    # Check for Icons
-    if not os.path.exists(paths.ASSETS_ICO_PATH):
-        log(f"Downloading {paths.ASSETS_BASE_URL}{paths.ASSETS_ICO_NAME}")
-        download_assets_file(paths.ASSETS_ICO_NAME)
-        # sys.exit(1)
-    if not os.path.exists(paths.ASSETS_ICON_ENABLED_PATH):
-        log(f"Downloading {paths.ASSETS_BASE_URL}{paths.ASSETS_ICON_ENABLED_NAME}")
-        download_assets_file(paths.ASSETS_ICON_ENABLED_NAME)
-        # sys.exit(1)
-    if not os.path.exists(paths.ASSETS_ICON_DISABLED_PATH):
-        log(f"Downloading {paths.ASSETS_BASE_URL}{paths.ASSETS_ICON_DISABLED_NAME}")
-        download_assets_file(paths.ASSETS_ICON_DISABLED_NAME)
-        # sys.exit(1)
-
-    # Check for temp folder
-    if not os.path.exists(paths.MMT_DIR_PATH):
-        os.makedirs(paths.MMT_DIR_PATH)
-        log(f"Creating {paths.MMT_DIR_NAME} folder")
+    paths_actions = {
+        paths.CONFIG_PATH: _create_default_config_file,
+        paths.ASSETS_DIR_PATH: lambda: os.mkdir(paths.ASSETS_DIR_PATH),
+        paths.ASSETS_ICO_PATH: lambda: download_assets_file(paths.ASSETS_ICO_NAME),
+        paths.ASSETS_ICON_ENABLED_PATH: lambda: download_assets_file(
+            paths.ASSETS_ICON_ENABLED_NAME
+        ),
+        paths.ASSETS_ICON_DISABLED_PATH: lambda: download_assets_file(
+            paths.ASSETS_ICON_DISABLED_NAME
+        ),
+    }
+    for path, action in paths_actions.items():
+        if not os.path.exists(path):
+            action()
+            log(INFO, f"Creating or downloading {os.path.basename(path)}")
 
 
 def download_assets_file(image_name):
-    image_url = paths.ASSETS_BASE_URL + image_name
+    image_url = os.path.join(paths.ASSETS_BASE_URL, image_name)
     response = requests.get(image_url, stream=True, timeout=5)
-
     if response.status_code == 200:
-        filename = response.url.split("/")[-1]
-
-        with open(os.path.join(paths.ASSETS_DIR_PATH, filename), "wb") as f:
+        with open(os.path.join(paths.ASSETS_DIR_PATH, image_name), "wb") as f:
             for chunk in response.iter_content(1024):
                 f.write(chunk)
     else:
-        log(f"Error occurred while downloading {image_name}: {response.status_code}")
+        log(
+            ERROR,
+            f"Error occurred while downloading {image_name}: {response.status_code}",
+        )
 
 
 def init_config():
     _check_for_missing_files()
-
-    if get_first_start_value():
+    if get_value(KEY_FIRST_START):
         ui.init_root_window()
-        set_first_start_value(False)
+        set_value(KEY_FIRST_START, False)
 
 
-def get_mmt_path_value():
+def get_value(key):
     _read_from_config()
-    return _configparser.get(_SETTINGS_SECTION, _MMT_PATH_KEY)
+    value = _configparser.get(_SECTION_SETTINGS, key)
+    return value.lower() == "yes" if value.lower() in ["yes", "no"] else value
 
 
-def set_mmt_path_value(_value):
-    log(f"Config.ini - Setting mmt_path to {_value}")
-    _configparser[_SETTINGS_SECTION][_MMT_PATH_KEY] = _value
-    _write_to_config()
+def set_value(key, value):
+    if isinstance(value, bool):
+        value_str = "yes" if value else "no"
+    else:
+        value_str = str(value)
 
-
-def get_monitor_name_value():
-    _read_from_config()
-    return _configparser.get(_SETTINGS_SECTION, _MONITOR_NAME_KEY)
-
-
-def set_monitor_name_value(_value):
-    log(f"Config.ini - Setting monitor_name to {_value}")
-    _configparser[_SETTINGS_SECTION][_MONITOR_NAME_KEY] = _value
-    _write_to_config()
-
-
-def get_monitor_serial_value():
-    _read_from_config()
-    return _configparser.get(_SETTINGS_SECTION, _MONITOR_SERIAL_KEY)
-
-
-def set_monitor_serial_value(_value):
-    log(f"Config.ini - Setting monitor_serial to {_value}")
-    _configparser[_SETTINGS_SECTION][_MONITOR_SERIAL_KEY] = _value
-    _write_to_config()
-
-
-def get_start_with_windows_value():
-    _read_from_config()
-    return _configparser.getboolean(_SETTINGS_SECTION, _START_WITH_WINDOWS_KEY)
-
-
-def set_start_with_windows_value(_value):
-    value_str = "yes" if _value else "no"
-    log(f"Config.ini - Setting start_with_windows to {value_str}")
-    _configparser[_SETTINGS_SECTION][_START_WITH_WINDOWS_KEY] = value_str
-    _write_to_config()
-
-
-def get_first_start_value():
-    _read_from_config()
-    return _configparser.getboolean(_SETTINGS_SECTION, _FIRST_START_KEY)
-
-
-def set_first_start_value(_value):
-    value_str = "yes" if _value else "no"
-    log(f"Config.ini - Setting first_start to {value_str}")
-    _configparser[_SETTINGS_SECTION][_FIRST_START_KEY] = value_str
+    log(INFO, f"{paths.CONFIG_FILE_NAME} - Setting {key} to {value_str}")
+    _configparser[_SECTION_SETTINGS][key] = value_str
     _write_to_config()
 
 
@@ -138,11 +88,5 @@ def _write_to_config():
 
 
 def _create_default_config_file():
-    _configparser[_SETTINGS_SECTION] = {
-        _MONITOR_NAME_KEY: "Example Monitor",
-        _MONITOR_SERIAL_KEY: "12345",
-        _MMT_PATH_KEY: "C:/MultiMonitorTool.exe",
-        _START_WITH_WINDOWS_KEY: "no",
-        _FIRST_START_KEY: "yes",
-    }
+    _configparser[_SECTION_SETTINGS] = _DEFAULT_CONFIG
     _write_to_config()

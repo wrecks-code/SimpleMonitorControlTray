@@ -40,10 +40,11 @@ def init_root_window():
 
 def exit_application():
     # clean up files if setup was interrupted
-    shutil.rmtree(paths.MMT_DIR_PATH)
     shutil.rmtree(paths.ASSETS_DIR_PATH)
     os.remove(paths.CONFIG_PATH)
     os.remove(paths.LOG_PATH)
+    os.remove(paths.MMT_CONFIG_PATH)
+    os.remove(paths.MMT_CSV_PATH)
     _ROOT_WINDOW.destroy()
     sys.exit(1)
 
@@ -73,12 +74,10 @@ def _init_mmt_selection_frame():
 def _browse_button_callback():
     if _exe_path := filedialog.askopenfilename(
         title=ui_strings.SELECT_MMT_LABEL,
-        filetypes=[("MultiMonitorTool", "multimonitortool.exe")],
+        filetypes=[(paths.MMT_EXE_NAME.split(".", maxsplit=1)[0], paths.MMT_EXE_NAME)],
     ):
-        config.set_mmt_path_value(_exe_path)
+        config.set_value(config.KEY_MMT_PATH, _exe_path)
         _SELECT_MMT_EXE_FRAME.destroy()
-        multimonitortool.enable_all_disabled_monitors()
-        multimonitortool.save_mmt_config()
         _init_monitor_selection_frame()
     else:
         print(ui_strings.NO_FILE_SELECTED)
@@ -103,8 +102,9 @@ def _init_monitor_selection_frame():
 
     def _select_monitor_button_callback():
         _menu_string = monitor_selection_menu.get().split("|")
-        config.set_monitor_name_value(_menu_string[1].strip())
-        config.set_monitor_serial_value(_menu_string[2].strip())
+        config.set_value(config.KEY_MONITOR_NAME, _menu_string[1].strip())
+        config.set_value(config.KEY_MONITOR_SERIAL, _menu_string[2].strip())
+        multimonitortool.save_mmt_config()
 
         _ROOT_WINDOW.destroy()
 

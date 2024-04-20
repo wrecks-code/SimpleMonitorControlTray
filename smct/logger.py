@@ -3,6 +3,8 @@ import os
 from smct.paths import LOG_PATH
 
 ENCODING = "utf-8"
+INFO = "info"
+ERROR = "error"
 
 LOG = None
 STARTUP = True
@@ -10,8 +12,11 @@ STARTUP = True
 LOG_LINE_LIMIT = 300
 
 
-def log(text):
-    LOG.info(text)
+def log(log_type, text):
+    if log_type == ERROR:
+        LOG.error(text)
+    elif log_type == INFO:
+        LOG.info(text)
 
 
 def clear_log_if_needed():

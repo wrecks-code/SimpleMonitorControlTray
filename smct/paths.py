@@ -22,10 +22,10 @@ EXE_FILE_NAME = f"{ui_strings.APP_NAME}.exe"
 CONFIG_FILE_NAME = "config.ini"
 LOG_FILE_NAME = "smct.log"
 ASSETS_DIR_NAME = "assets"
-MMT_DIR_NAME = "mmt"
 
-MMT_CSV_NAME = "MultiMonitorToolOutput.csv"
-MMT_CONFIG_NAME = "MultiMonitorToolConfig"
+MMT_EXE_NAME = "MultiMonitorTool.exe"
+MMT_CSV_NAME = "MultiMonitorToolScommaOutput.tmp"
+MMT_CONFIG_NAME = "MultiMonitorToolConfig.ini"
 
 ASSETS_ICON_ENABLED_NAME = "tray_monitor_enabled.png"
 ASSETS_ICON_DISABLED_NAME = "tray_monitor_disabled.png"
@@ -40,10 +40,9 @@ EXE_PATH = os.path.join(BASE_PATH, EXE_FILE_NAME)
 CONFIG_PATH = os.path.join(BASE_PATH, CONFIG_FILE_NAME)
 LOG_PATH = os.path.join(BASE_PATH, LOG_FILE_NAME)
 ASSETS_DIR_PATH = os.path.join(BASE_PATH, ASSETS_DIR_NAME)
-MMT_DIR_PATH = os.path.join(BASE_PATH, MMT_DIR_NAME)
 
-MMT_CSV_PATH = os.path.join(MMT_DIR_PATH, MMT_CSV_NAME)
-MMT_CONFIG_PATH = os.path.join(MMT_DIR_PATH, MMT_CONFIG_NAME)
+MMT_CSV_PATH = os.path.join(BASE_PATH, MMT_CSV_NAME)
+MMT_CONFIG_PATH = os.path.join(BASE_PATH, MMT_CONFIG_NAME)
 
 ASSETS_ICON_ENABLED_PATH = os.path.join(ASSETS_DIR_PATH, ASSETS_ICON_ENABLED_NAME)
 ASSETS_ICON_DISABLED_PATH = os.path.join(ASSETS_DIR_PATH, ASSETS_ICON_DISABLED_NAME)

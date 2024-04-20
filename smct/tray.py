@@ -5,7 +5,7 @@ from PIL import Image
 from pystray import MenuItem as item
 
 from smct import config, multimonitortool, paths, registry, ui_strings
-from smct.logger import log
+from smct.logger import log, INFO
 
 ICON = None
 
@@ -15,13 +15,21 @@ def save_mmt_config_clicked():
 
 
 def icon_tray_clicked():
-    log("icon_tray_clicked()")
-    if multimonitortool.is_selected_monitor_enabled():
-        multimonitortool.disable_monitor()
+    log(INFO, "icon_tray_clicked()")
+
+    selected_monitor_active, selected_monitor_id = (
+        multimonitortool.get_state_and_id_of_monitor()
+    )
+
+    if selected_monitor_active:
+        multimonitortool.disable_monitor(selected_monitor_id)
         ICON.icon = get_icon_image(False)
     else:
         multimonitortool.enable_monitor()
         ICON.icon = get_icon_image(True)
+
+
+# ich will ne function die
 
 
 def exit_clicked():
@@ -33,10 +41,12 @@ def open_folder_clicked():
 
 
 def startup_with_windows_clicked():
-    _current_start_with_windows_value = config.get_start_with_windows_value()
-    config.set_start_with_windows_value(not _current_start_with_windows_value)
+    _current_start_with_windows_value = config.get_value(config.KEY_START_WITH_WINDOWS)
+    config.set_value(
+        config.KEY_START_WITH_WINDOWS, not _current_start_with_windows_value
+    )
 
-    if config.get_start_with_windows_value():
+    if config.get_value(config.KEY_START_WITH_WINDOWS):
         registry.add_to_autostart()
     else:
         registry.remove_from_autostart()
@@ -68,11 +78,11 @@ def init_tray():
 
     first_image_icon = None
 
-    if multimonitortool.is_selected_monitor_enabled():
-        first_image_icon = get_icon_image(True)
+    selected_monitor_active, _ = multimonitortool.get_state_and_id_of_monitor()
+
+    first_image_icon = get_icon_image(selected_monitor_active)
+    if selected_monitor_active and not os.path.exists(paths.MMT_CONFIG_PATH):
         multimonitortool.save_mmt_config()
-    else:
-        first_image_icon = get_icon_image(False)
 
     # pylint: disable=global-statement
     global ICON
