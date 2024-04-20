@@ -36,5 +36,5 @@ if STARTUP:
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
     LOG = logging.getLogger(__name__)
-    LOG.critical("Start")
+    LOG.critical("Program startup")
     STARTUP = False
