@@ -29,9 +29,6 @@ def icon_tray_clicked():
         ICON.icon = get_icon_image(True)
 
 
-# ich will ne function die
-
-
 def exit_clicked():
     ICON.stop()
 
