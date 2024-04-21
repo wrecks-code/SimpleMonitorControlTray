@@ -6,13 +6,13 @@ ENCODING = "utf-8"
 INFO = "info"
 ERROR = "error"
 
-LOG = None
+LOG: logging.Logger
 STARTUP = True
 
 LOG_LINE_LIMIT = 300
 
 
-def log(log_type, text):
+def log(log_type: str, text: str):
     if log_type == ERROR:
         LOG.error(text)
     elif log_type == INFO:

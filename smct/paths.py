@@ -4,7 +4,7 @@ import sys
 from smct import ui_strings
 
 
-def get_base_path():
+def get_base_path() -> str:
     if getattr(sys, "frozen", False):
         module_dir = os.path.dirname(sys.executable)
     else:
@@ -12,7 +12,7 @@ def get_base_path():
     return strip_package_name_from_path(module_dir)
 
 
-def strip_package_name_from_path(path):
+def strip_package_name_from_path(path) -> str:
     suffix = "smct"  # Removed the backslash for platform independence
     return path[: -len(suffix)] if path.endswith(suffix) else path
 

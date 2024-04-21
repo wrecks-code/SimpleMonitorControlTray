@@ -1,13 +1,13 @@
 import os
+from typing import Any
 
-import pystray
+from pystray import Icon, Menu, MenuItem
 from PIL import Image
-from pystray import MenuItem as item
 
 from smct import config, multimonitortool, paths, registry, ui_strings
 from smct.logger import log, INFO
 
-ICON = None
+ICON: Any = None
 
 
 def save_mmt_config_clicked():
@@ -52,7 +52,7 @@ def startup_with_windows_clicked():
         registry.remove_from_autostart()
 
 
-def get_icon_image(_option):
+def get_icon_image(_option: bool) -> Image.Image:
     if _option:
         return Image.open(paths.ASSETS_ICON_ENABLED_PATH)
     return Image.open(paths.ASSETS_ICON_DISABLED_PATH)
@@ -60,20 +60,20 @@ def get_icon_image(_option):
 
 def init_tray():
     menu = (
-        item(ui_strings.APP_NAME, icon_tray_clicked, default=True, visible=False),
-        item(
+        MenuItem(ui_strings.APP_NAME, icon_tray_clicked, default=True, visible=False),
+        MenuItem(
             ui_strings.STARTUP_WITH_WINDOWS,
             startup_with_windows_clicked,
             checked=lambda icon: registry.is_autostartkey_in_registry(),
         ),
-        pystray.Menu.SEPARATOR,
-        item(
+        Menu.SEPARATOR,
+        MenuItem(
             ui_strings.SAVE_MONITOR_LAYOUT,
             save_mmt_config_clicked,
         ),
-        item(ui_strings.OPEN_FOLDER, open_folder_clicked),
-        pystray.Menu.SEPARATOR,
-        item(ui_strings.EXIT, exit_clicked),
+        MenuItem(ui_strings.OPEN_FOLDER, open_folder_clicked),
+        Menu.SEPARATOR,
+        MenuItem(ui_strings.EXIT, exit_clicked),
     )
 
     first_image_icon = None
@@ -92,7 +92,5 @@ def init_tray():
 
     # pylint: disable=global-statement
     global ICON
-    ICON = pystray.Icon(
-        ui_strings.APP_NAME, first_image_icon, ui_strings.APP_NAME, menu
-    )
+    ICON = Icon(ui_strings.APP_NAME, first_image_icon, ui_strings.APP_NAME, menu)
     ICON.run()

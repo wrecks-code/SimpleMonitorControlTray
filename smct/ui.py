@@ -3,114 +3,95 @@ import os
 import shutil
 import tkinter
 import customtkinter
-from customtkinter import filedialog
+from customtkinter import CTkFrame, filedialog, CTkLabel, CTkButton, CTkOptionMenu
 from smct import ui_strings, config, multimonitortool, paths
 
-_ROOT_WINDOW = None
-_SELECT_MMT_EXE_FRAME = None
-_SELECT_MONITOR_FRAME = None
 
+class Application:
+    def __init__(self):
+        customtkinter.set_ctk_parent_class(tkinter.Tk)
+        customtkinter.set_appearance_mode("dark")
+        customtkinter.set_default_color_theme("dark-blue")
 
-def init_root_window():
-    # pylint: disable=global-statement
-    global _ROOT_WINDOW, _SELECT_MMT_EXE_FRAME, _SELECT_MONITOR_FRAME
+        self.root_window = customtkinter.CTk()
+        self.root_window.title(ui_strings.SHORT_NAME)
+        self.root_window.resizable(False, False)
+        self.root_window.protocol("WM_DELETE_WINDOW", self.exit_application)
+        self.root_window.iconbitmap(paths.ASSETS_ICO_PATH)
 
-    customtkinter.set_ctk_parent_class(tkinter.Tk)
+        self.init_mmt_selection_frame()
 
-    customtkinter.set_appearance_mode(
-        "dark"
-    )  # Modes: "System" (standard), "Dark", "Light"
-    customtkinter.set_default_color_theme(
-        "dark-blue"
-    )  # Themes: "blue" (standard), "green", "dark-blue"
+    def exit_application(self):
+        shutil.rmtree(paths.ASSETS_DIR_PATH, ignore_errors=True)
+        for path in [
+            paths.CONFIG_PATH,
+            paths.LOG_PATH,
+            paths.MMT_CONFIG_PATH,
+            paths.MMT_CSV_PATH,
+        ]:
+            os.remove(path)
+        self.root_window.destroy()
+        sys.exit(1)
 
-    _ROOT_WINDOW = customtkinter.CTk()
+    def init_mmt_selection_frame(self):
+        self.selection_frame = CTkFrame(master=self.root_window)
+        self.selection_frame.pack(pady=10, padx=10, fill="both", expand=True)
 
-    _ROOT_WINDOW.title(ui_strings.SHORT_NAME)
-    _ROOT_WINDOW.resizable(False, False)
+        select_mmt_label = CTkLabel(
+            text=ui_strings.SELECT_MMT_LABEL,
+            master=self.selection_frame,
+            justify=customtkinter.CENTER,
+        )
+        select_mmt_label.pack(pady=5, padx=5)
 
-    _ROOT_WINDOW.geometry()
-    _ROOT_WINDOW.protocol("WM_DELETE_WINDOW", exit_application)
+        browse_button = CTkButton(
+            text=ui_strings.BROWSE_BUTTON,
+            master=self.selection_frame,
+            command=self.browse_button_callback,
+        )
+        browse_button.pack(pady=10, padx=10)
 
-    _SELECT_MMT_EXE_FRAME = customtkinter.CTkFrame(master=_ROOT_WINDOW)
-    _SELECT_MONITOR_FRAME = customtkinter.CTkFrame(master=_ROOT_WINDOW)
+    def browse_button_callback(self):
+        if exe_path := filedialog.askopenfilename(
+            title=ui_strings.SELECT_MMT_LABEL,
+            filetypes=[
+                (paths.MMT_EXE_NAME.split(".", maxsplit=1)[0], paths.MMT_EXE_NAME)
+            ],
+        ):
+            config.set_value(config.KEY_MMT_PATH, exe_path)
+            self.selection_frame.destroy()
+            self.init_monitor_selection_frame()
+        else:
+            print(ui_strings.NO_FILE_SELECTED)
 
-    _init_mmt_selection_frame()
+    def init_monitor_selection_frame(self):
+        # pylint: disable=attribute-defined-outside-init
+        self.selection_frame = CTkFrame(master=self.root_window)
+        self.selection_frame.pack(pady=10, padx=10, fill="both", expand=True)
 
+        monitor_selection_label = CTkLabel(
+            text=ui_strings.SELECT_MONITOR_LABEL,
+            master=self.selection_frame,
+            justify=customtkinter.CENTER,
+        )
+        monitor_selection_label.pack(pady=5, padx=5)
 
-def exit_application():
-    # clean up files if setup was interrupted
-    shutil.rmtree(paths.ASSETS_DIR_PATH)
-    os.remove(paths.CONFIG_PATH)
-    os.remove(paths.LOG_PATH)
-    os.remove(paths.MMT_CONFIG_PATH)
-    os.remove(paths.MMT_CSV_PATH)
-    _ROOT_WINDOW.destroy()
-    sys.exit(1)
+        monitor_selection_menu = CTkOptionMenu(
+            self.selection_frame,
+            values=multimonitortool.get_monitor_selection_list(),
+        )
+        monitor_selection_menu.pack(pady=10, padx=10)
 
+        select_monitor_button = CTkButton(
+            text=ui_strings.OK_BUTTON,
+            master=self.selection_frame,
+            command=lambda: self.select_monitor_button_callback(monitor_selection_menu),
+        )
+        select_monitor_button.pack(pady=10, padx=10)
 
-def _init_mmt_selection_frame():
-    _ROOT_WINDOW.iconbitmap(paths.ASSETS_ICO_PATH)
-    # _root_window.geometry("300x110")
-    _SELECT_MMT_EXE_FRAME.pack(pady=10, padx=10, fill="both", expand=True)
-
-    select_mmt_label = customtkinter.CTkLabel(
-        text=ui_strings.SELECT_MMT_LABEL,
-        master=_SELECT_MMT_EXE_FRAME,
-        justify=customtkinter.CENTER,
-    )
-    select_mmt_label.pack(pady=5, padx=5)
-
-    browse_button = customtkinter.CTkButton(
-        text=ui_strings.BROWSE_BUTTON,
-        master=_SELECT_MMT_EXE_FRAME,
-        command=_browse_button_callback,
-    )
-    browse_button.pack(pady=10, padx=10)
-
-    _ROOT_WINDOW.mainloop()
-
-
-def _browse_button_callback():
-    if _exe_path := filedialog.askopenfilename(
-        title=ui_strings.SELECT_MMT_LABEL,
-        filetypes=[(paths.MMT_EXE_NAME.split(".", maxsplit=1)[0], paths.MMT_EXE_NAME)],
-    ):
-        config.set_value(config.KEY_MMT_PATH, _exe_path)
-        _SELECT_MMT_EXE_FRAME.destroy()
-        _init_monitor_selection_frame()
-    else:
-        print(ui_strings.NO_FILE_SELECTED)
-
-
-def _init_monitor_selection_frame():
-    # _root_window.geometry("300x160")
-    _SELECT_MONITOR_FRAME.pack(pady=10, padx=10, fill="both", expand=True)
-
-    _monitor_selection_label = customtkinter.CTkLabel(
-        text=ui_strings.SELECT_MONITOR_LABEL,
-        master=_SELECT_MONITOR_FRAME,
-        justify=customtkinter.CENTER,
-    )
-    _monitor_selection_label.pack(pady=5, padx=5)
-
-    monitor_selection_menu = customtkinter.CTkOptionMenu(
-        _SELECT_MONITOR_FRAME,
-        values=multimonitortool.get_monitor_selection_list(),
-    )
-    monitor_selection_menu.pack(pady=10, padx=10)
-
-    def _select_monitor_button_callback():
-        _menu_string = monitor_selection_menu.get().split("|")
-        config.set_value(config.KEY_MONITOR_NAME, _menu_string[1].strip())
-        config.set_value(config.KEY_MONITOR_SERIAL, _menu_string[2].strip())
+    def select_monitor_button_callback(self, menu):
+        menu_string = menu.get().split("|")
+        config.set_value(config.KEY_MONITOR_NAME, menu_string[1].strip())
+        config.set_value(config.KEY_MONITOR_SERIAL, menu_string[2].strip())
         multimonitortool.save_mmt_config()
-
-        _ROOT_WINDOW.destroy()
-
-    _select_monitor_button = customtkinter.CTkButton(
-        text=ui_strings.OK_BUTTON,
-        master=_SELECT_MONITOR_FRAME,
-        command=_select_monitor_button_callback,
-    )
-    _select_monitor_button.pack(pady=10, padx=10)
+        self.root_window.destroy()
